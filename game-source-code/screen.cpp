@@ -30,14 +30,19 @@ void screen::processEvents()
 
 void screen::render()
 {
+    //Animate PacMan
     ResourcesManager manager;
 
+    //loads picture and stores it as a sprite
+    //scales PacMan to the desired size
     sf::IntRect rectPac(900,0,900,1000);
     sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
     PacMan.setTextureRect(rectPac);
     PacMan.setPosition(sf::Vector2f(80,65));
     PacMan.scale(sf::Vector2f(0.03,0.03));
 
+    //Divides the PacMan sprite into two
+    //Allocates time and switches between sections of sprite to create animation
     if (clock.getElapsedTime().asMilliseconds() > 100.0f)
     {
         if(rectPac.left == 900)
