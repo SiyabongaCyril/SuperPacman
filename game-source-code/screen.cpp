@@ -30,7 +30,29 @@ void screen::processEvents()
 
 void screen::render()
 {
+    ResourcesManager manager;
+
+    sf::IntRect rectPac(900,0,900,1000);
+    sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
+    PacMan.setTextureRect(rectPac);
+    PacMan.setPosition(sf::Vector2f(80,65));
+    PacMan.scale(sf::Vector2f(0.03,0.03));
+
+    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+    {
+        if(rectPac.left == 900)
+        {
+            rectPac.left = 0;
+        }
+        else
+            rectPac.left +=900;
+        PacMan.setTextureRect(rectPac);
+
+        if (clock.getElapsedTime().asMilliseconds() > 200.0f)
+            clock.restart();
+    }
 
     window.clear(sf::Color::Black);
+    window.draw(PacMan);
     window.display();
 }
