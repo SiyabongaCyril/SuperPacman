@@ -15,6 +15,8 @@ class screen
         vector<sf::CircleShape> SuperBalls;
 
     private :
+        sf::Font font;
+        sf::Text startUpMessage;
         sf::RenderWindow window;
         sf::Clock clock;
     private:
