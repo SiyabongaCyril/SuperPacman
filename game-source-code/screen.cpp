@@ -32,6 +32,7 @@ void screen::render()
 {
     //Animate PacMan
     ResourcesManager manager;
+     Maze getFunction;
 
     //loads picture and stores it as a sprite
     //scales PacMan to the desired size
@@ -58,6 +59,10 @@ void screen::render()
     }
 
     window.clear(sf::Color::Black);
-    window.draw(PacMan);
-    window.display();
-}
+    for(int j = 0; j<getFunction.maze.size(); j++)
+    {
+        window.draw(getFunction.maze[j]);
+    }
+        window.draw(PacMan);
+        window.display();
+    }
