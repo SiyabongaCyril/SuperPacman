@@ -8,12 +8,10 @@
 
 using namespace std;
 
-
-
 int main()
 {
    screen pop;
    pop.run();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
