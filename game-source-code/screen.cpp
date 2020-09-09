@@ -4,7 +4,33 @@
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
+    //Load Pallets
+    //Loads Power Pallets
+    //uses a vector to store pallets with their specific coordinates
+    sf::CircleShape  superB;
 
+    for( unsigned int i = 0; i<600; i++)
+    {
+        for(unsigned int j = 0; j<600; j++)
+        {
+
+            if(i == 130 && j==105 || i ==465 && j == 105||
+                    i == 130 && j==515 || i == 465 && j == 515)
+            {
+                superB.setRadius(10);
+                superB.setFillColor(sf::Color::Blue);
+                superB.setPosition(sf::Vector2f(i,j));
+                SuperBalls.push_back(superB);
+            }
+            else if(i == 210 && j ==374 || i == 370 && j == 374)
+            {
+                superB.setRadius(15);
+                superB.setFillColor(sf::Color::Green);
+                superB.setPosition(sf::Vector2f(i,j));
+                SuperBalls.push_back(superB);
+            }
+        }
+    }
 
 }
 //Window Setup
@@ -32,7 +58,7 @@ void screen::render()
 {
     //Animate PacMan
     ResourcesManager manager;
-     Maze getFunction;
+    Maze getFunction;
 
     //loads picture and stores it as a sprite
     //scales PacMan to the desired size
@@ -67,6 +93,10 @@ void screen::render()
     {
         window.draw(getFunction.maze[j]);
     }
-        window.draw(PacMan);
-        window.display();
+    for(int i = 0; i<SuperBalls.size(); i++)
+    {
+        window.draw(SuperBalls[i]);
     }
+    window.draw(PacMan);
+    window.display();
+}
