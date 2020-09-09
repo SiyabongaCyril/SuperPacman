@@ -1,6 +1,7 @@
 #include "screen.h"
 #include "ResourcesManager.h"
 #include "Maze.h"
+#include "doctest.h"
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {

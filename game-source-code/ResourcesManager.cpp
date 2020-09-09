@@ -23,6 +23,7 @@ sf::Texture& ResourcesManager::GetTexture(string const& filename)
     {
         auto& texture = texMap[filename];
         texture.loadFromFile(filename);
+
         return texture;
     }
 }
