@@ -59,6 +59,10 @@ void screen::render()
     }
 
     window.clear(sf::Color::Black);
+    for(int k = 0; k<getFunction.Doors.size(); k++)
+    {
+        window.draw(getFunction.Doors[k]);
+    }
     for(int j = 0; j<getFunction.maze.size(); j++)
     {
         window.draw(getFunction.maze[j]);

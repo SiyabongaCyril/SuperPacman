@@ -82,4 +82,27 @@ Maze::Maze():maze(),Doors()
             }
         }
     }
+
+    //Create MazeDoors
+    //Creates doors for parts of the maze that cannot be entered without keys
+
+    sf::RectangleShape door_blocks(sf::Vector2f(618,584));
+
+    for( unsigned int i = 0; i<600; i++)
+    {
+        for(unsigned int j = 0; j<600; j++)
+        {
+
+            if(i==73 && j==278 || i==115 && j==278|| i==157 && j==278 ||i==199 && j==278
+                    ||  i==535 && j==278 || i==493 && j==278 || i==451 && j==278 || i==412 && j==278
+                    || i==199 && j==96 || i==413 && j==96 || i==199 && j==539 || i==412 && j==539
+              )
+            {
+                door_blocks.setScale(sf::Vector2f(0.005,0.07));
+                door_blocks.setFillColor(sf::Color::Red);
+                door_blocks.setPosition(sf::Vector2f(i,j));
+                Doors.push_back(door_blocks);
+            }
+        }
+    }
 }
