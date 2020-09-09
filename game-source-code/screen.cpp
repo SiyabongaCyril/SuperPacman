@@ -4,6 +4,20 @@
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
+     sf::Font font;
+     sf::Text startUpMessage;
+
+    //Initialise pre-game window
+    //startUpMessage.setFont();
+    sf::Font font;
+    if(!font.loadFromFile("resources/ostrich-regular.ttf"))
+
+	startUpMessage.setFont(font);
+    startUpMessage.setCharacterSize(20);
+    startUpMessage.setPosition(30.f, 50.f);
+    startUpMessage.setFillColor(sf::Color::Red);
+    startUpMessage.setString("Welcome to Super Pac-Man\nPress Enter to start the game\nTo play the game, use the arrow keys");
+
     //Load Pallets
     //Loads Power Pallets
     //uses a vector to store pallets with their specific coordinates
