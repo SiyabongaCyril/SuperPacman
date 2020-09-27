@@ -5,19 +5,8 @@
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
-     sf::Font font;
-     sf::Text startUpMessage;
 
-    //Initialise pre-game window
-    //startUpMessage.setFont();
-    sf::Font font;
-    if(!font.loadFromFile("resources/ostrich-regular.ttf"))
-
-	startUpMessage.setFont(font);
-    startUpMessage.setCharacterSize(20);
-    startUpMessage.setPosition(30.f, 50.f);
-    startUpMessage.setFillColor(sf::Color::Red);
-    startUpMessage.setString("Welcome to Super Pac-Man\nPress Enter to start the game\nTo play the game, use the arrow keys");
+    splashScreen();
 
     //Load Pallets
     //Loads Power Pallets
@@ -64,54 +53,121 @@ void screen::processEvents()
     sf::Event event;
     while(window.pollEvent(event))
     {
-        if(event.type == sf::Event::Closed)
-            window.close(); //Window is closed by the x cross on the pop up exexutable file
+        switch(event.type)
+        {
+        case sf::Event::EventType::Closed: //Called when the x icon on window is pressed
+            window.close();
+            break;
+        case sf::Event::EventType::KeyPressed: //called whenever a key is pressed (Keeps track of all the keys)
+            if(event.key.code == sf::Keyboard::Escape)
+                window.close(); //key can be closed by close button and space
+            if(event.key.code == sf::Keyboard::Enter)
+                start = true;
+        default:
+            break;
+        }
     }
 }
 
 void screen::render()
 {
+    //loads picture and stores it as a sprite
     //Animate PacMan
     ResourcesManager manager;
-    Maze getFunction;
 
-    //loads picture and stores it as a sprite
-    //scales PacMan to the desired size
     sf::IntRect rectPac(900,0,900,1000);
     sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
-    PacMan.setTextureRect(rectPac);
-    PacMan.setPosition(sf::Vector2f(80,65));
-    PacMan.scale(sf::Vector2f(0.03,0.03));
+    sf::Sprite SplashScreenPacMan(ResourcesManager::GetTexture("resources/pacman.png"));
 
-    //Divides the PacMan sprite into two
-    //Allocates time and switches between sections of sprite to create animation
-    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+    //declaring pack man icon to display on the splashscreen
+    if(!start)
     {
-        if(rectPac.left == 900)
+        //scales PacMan to the desired size
+        SplashScreenPacMan.setTextureRect(rectPac);
+        SplashScreenPacMan.setPosition(sf::Vector2f(194.f,47.5));
+        SplashScreenPacMan.scale(sf::Vector2f(0.027,0.027));
+
+        if (clock.getElapsedTime().asMilliseconds() > 100.0f)
         {
-            rectPac.left = 0;
+            if(rectPac.left == 900)
+            {
+                rectPac.left = 0;
+            }
+            else
+                rectPac.left +=900;
+            SplashScreenPacMan.setTextureRect(rectPac);
+
+            if (clock.getElapsedTime().asMilliseconds() > 200.0f)
+                clock.restart();
         }
-        else
-            rectPac.left +=900;
+    }
+
+    //Start the game mode if the player enters the game mode
+    if(start)
+    {
+
+        Maze getFunction;
+
+        //scales PacMan to the desired size
         PacMan.setTextureRect(rectPac);
+        PacMan.setPosition(sf::Vector2f(80,65));
+        PacMan.scale(sf::Vector2f(0.03,0.03));
 
-        if (clock.getElapsedTime().asMilliseconds() > 200.0f)
-            clock.restart();
-    }
+        //Divides the PacMan sprite into two
+        //Allocates time and switches between sections of sprite to create animation
+        if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+        {
+            if(rectPac.left == 900)
+            {
+                rectPac.left = 0;
+            }
+            else
+                rectPac.left +=900;
+            PacMan.setTextureRect(rectPac);
 
-    window.clear(sf::Color::Black);
-    for(int k = 0; k<getFunction.Doors.size(); k++)
-    {
-        window.draw(getFunction.Doors[k]);
+            if (clock.getElapsedTime().asMilliseconds() > 200.0f)
+                clock.restart();
+        }
+
+        window.clear(sf::Color::Black);
+        for(int k = 0; k<getFunction.Doors.size(); k++)
+        {
+            window.draw(getFunction.Doors[k]);
+        }
+        for(int j = 0; j<getFunction.maze.size(); j++)
+        {
+            window.draw(getFunction.maze[j]);
+        }
+        for(int i = 0; i<SuperBalls.size(); i++)
+        {
+            window.draw(SuperBalls[i]);
+        }
+        window.draw(PacMan);
     }
-    for(int j = 0; j<getFunction.maze.size(); j++)
+    else
     {
-        window.draw(getFunction.maze[j]);
+        //splashscreen draw variables on window if in splashhscreen mode
+        window.draw(startUpMessage);
+        window.draw(SplashScreenPacMan);
     }
-    for(int i = 0; i<SuperBalls.size(); i++)
-    {
-        window.draw(SuperBalls[i]);
-    }
-    window.draw(PacMan);
     window.display();
+}
+
+bool screen::splashScreen()
+{
+    //Initialise pre-game window
+    /*
+    Load Text Font
+    Set up text to be written on the splashcreen
+    */
+    font.loadFromFile("resources/ostrich-regular.ttf");
+    if(!font.loadFromFile("resources/OstrichSans-Medium.otf"))
+        return EXIT_FAILURE;
+
+    startUpMessage.setFont(font);
+    startUpMessage.setCharacterSize(20);
+    startUpMessage.setPosition(30.f, 50.f);
+    startUpMessage.setFillColor(sf::Color::White);
+    startUpMessage.setString("Welcome to Super Pac-Man\n\nPress Enter to start the game, Esc to exit\n\nTo play the game, use the arrow keys: Down, Up, Left, Right ");
+    return true;
 }
