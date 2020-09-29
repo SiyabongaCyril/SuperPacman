@@ -2,10 +2,8 @@
 #include "ResourcesManager.h"
 #include "Maze.h"
 //#include "doctest.h"
-<<<<<<< HEAD
-=======
+
 #include <string>
->>>>>>> f7f0f56ee19b9e63324c04664c7ec597377d8890
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
@@ -81,21 +79,8 @@ void screen::render()
     //loads picture and stores it as a sprite
     //Animate PacMan
     ResourcesManager manager;
-   /* sf::Texture texture;
-    if(!texture.loadFromFile("resources/pacman.png"))
-    {
-cout<<"PacMan Not Loaded"<<endl;
-    }
-    sf::Sprite PacMan;
-    PacMan.setTexture(texture);
-    PacMan.scale(sf::Vector2f(0.027,0.027));*/
 
     sf::IntRect rectPac(900,0,900,1000);
-    sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
-    PacMan.setTextureRect(rectPac);
-    PacMan.scale(sf::Vector2f(0.027,0.027));
-    PacMan.setPosition(sf::Vector2f(80,65));
-
     sf::Sprite SplashScreenPacMan(ResourcesManager::GetTexture("resources/pacman.png"));
 
     //declaring pack man icon to display on the splashscreen
@@ -124,36 +109,12 @@ cout<<"PacMan Not Loaded"<<endl;
     //Start the game mode if the player enters the game mode
     if(start)
     {
+        Maze getFunction;
 
-        float deltaTime = clock.restart().asSeconds();
-
-        //scales PacMan to the desired size
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            //PacMan.move(sf::Vector2f(10, 0));
-            PacMan.setPosition(sf::Vector2f(80+pos*deltaTime,65));
-        }
-
-        //Divides the PacMan sprite into two
-        //Allocates time and switches between sections of sprite to create animation
-       if (clock.getElapsedTime().asMilliseconds() > 100.0f)
-        {
-            if(rectPac.left == 900)
-            {
-                rectPac.left = 0;
-            }
-            else
-                rectPac.left +=900;
-            PacMan.setTextureRect(rectPac);
-
-            if (clock.getElapsedTime().asMilliseconds() > 200.0f)
-                clock.restart();
-        }
 
         window.clear(sf::Color::Black);
-<<<<<<< HEAD
-printMaze();
-=======
+        printMaze();
+        pacM();
 
         window.draw(getFunction.text);
 
@@ -168,21 +129,6 @@ printMaze();
         highScoreText.setString(numToStr);
 
         window.draw(highScoreText);
-
-        for(int k = 0; k<getFunction.Doors.size(); k++)
-        {
-            window.draw(getFunction.Doors[k]);
-        }
-        for(int j = 0; j<getFunction.maze.size(); j++)
-        {
-            window.draw(getFunction.maze[j]);
-        }
-        for(int i = 0; i<SuperBalls.size(); i++)
-        {
-            window.draw(SuperBalls[i]);
-        }
->>>>>>> f7f0f56ee19b9e63324c04664c7ec597377d8890
-        window.draw(PacMan);
     }
     else
     {
@@ -210,32 +156,67 @@ bool screen::splashScreen()
     startUpMessage.setString("Welcome to Super Pac-Man\n\nPress Enter to start the game, Esc to exit\n\nTo play the game, use the arrow keys: Down, Up, Left, Right ");
     return true;
 }
+//pacman function
+bool screen::pacM()
+{
+    ResourcesManager manager;
 
-<<<<<<< HEAD
+    sf::IntRect rectPac(900,0,900,1000);
+    sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
+    PacMan.setTextureRect(rectPac);
+    PacMan.scale(sf::Vector2f(0.027,0.027));
+    PacMan.setPosition(sf::Vector2f(80,65));
+
+    float deltaTime = clock.restart().asSeconds();
+
+    //scales PacMan to the desired size
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    {
+        //PacMan.move(sf::Vector2f(10, 0));
+        PacMan.setPosition(sf::Vector2f(80+pos,65));
+    }
+
+    //Divides the PacMan sprite into two
+    //Allocates time and switches between sections of sprite to create animation
+    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+    {
+        if(rectPac.left == 900)
+        {
+            rectPac.left = 0;
+        }
+        else
+            rectPac.left +=900;
+        PacMan.setTextureRect(rectPac);
+
+        if (clock.getElapsedTime().asMilliseconds() > 200.0f)
+            clock.restart();
+    }
+    window.draw(PacMan);
+}
 bool screen::printMaze()
 {
     Maze getFunction;
 
-            for(int k = 0; k<getFunction.Doors.size(); k++)
-        {
-            window.draw(getFunction.Doors[k]);
-        }
-        for(int j = 0; j<getFunction.maze.size(); j++)
-        {
-            window.draw(getFunction.maze[j]);
-        }
-        for(int i = 0; i<SuperBalls.size(); i++)
-        {
-            window.draw(SuperBalls[i]);
-        }
+    for(int k = 0; k<getFunction.Doors.size(); k++)
+    {
+        window.draw(getFunction.Doors[k]);
+    }
+    for(int j = 0; j<getFunction.maze.size(); j++)
+    {
+        window.draw(getFunction.maze[j]);
+    }
+    for(int i = 0; i<SuperBalls.size(); i++)
+    {
+        window.draw(SuperBalls[i]);
+    }
 
-        return true;
-=======
+    return true;
+}
 bool screen::scoreTexts()
 {
     //Load font and set text for the scores
-   if(!scoreFont.loadFromFile("resources/OstrichSans-Bold.otf"))
-    return EXIT_FAILURE;
+    if(!scoreFont.loadFromFile("resources/OstrichSans-Bold.otf"))
+        return EXIT_FAILURE;
 
     scoreText.setFont(scoreFont);
     scoreText.setCharacterSize(20);
@@ -248,5 +229,4 @@ bool screen::scoreTexts()
     highScoreText.setFillColor(sf::Color::White);
 
     return true;
->>>>>>> f7f0f56ee19b9e63324c04664c7ec597377d8890
 }
