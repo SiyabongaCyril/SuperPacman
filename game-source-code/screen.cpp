@@ -1,11 +1,15 @@
 #include "screen.h"
 #include "ResourcesManager.h"
 #include "Maze.h"
+#include <string>
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
 
     splashScreen();
+
+    //Load font and set text for the scores
+    scoreTexts();
 
     //Load Pallets
     //Loads Power Pallets
@@ -129,6 +133,21 @@ void screen::render()
         }
 
         window.clear(sf::Color::Black);
+
+        window.draw(getFunction.text);
+
+        numToStr = to_string(high_score);
+
+        scoreText.setString(numToStr);
+
+        window.draw(scoreText);
+
+        numToStr = to_string(score);
+
+        highScoreText.setString(numToStr);
+
+        window.draw(highScoreText);
+
         for(int k = 0; k<getFunction.Doors.size(); k++)
         {
             window.draw(getFunction.Doors[k]);
@@ -155,11 +174,8 @@ void screen::render()
 bool screen::splashScreen()
 {
     //Initialise pre-game window
-    /*
-    Load Text Font
-    Set up text to be written on the splashcreen
-    */
-    font.loadFromFile("resources/ostrich-regular.ttf");
+    //Load Text Font
+    //Set up text to be written on the splashcreen
     if(!font.loadFromFile("resources/OstrichSans-Medium.otf"))
         return EXIT_FAILURE;
 
@@ -168,5 +184,24 @@ bool screen::splashScreen()
     startUpMessage.setPosition(30.f, 50.f);
     startUpMessage.setFillColor(sf::Color::White);
     startUpMessage.setString("Welcome to Super Pac-Man\n\nPress Enter to start the game, Esc to exit\n\nTo play the game, use the arrow keys: Down, Up, Left, Right ");
+    return true;
+}
+
+bool screen::scoreTexts()
+{
+    //Load font and set text for the scores
+   if(!scoreFont.loadFromFile("resources/OstrichSans-Bold.otf"))
+    return EXIT_FAILURE;
+
+    scoreText.setFont(scoreFont);
+    scoreText.setCharacterSize(20);
+    scoreText.setPosition(73,25);
+    scoreText.setFillColor(sf::Color::White);
+
+    highScoreText.setFont(scoreFont);
+    highScoreText.setCharacterSize(20);
+    highScoreText.setPosition(273,25);
+    highScoreText.setFillColor(sf::Color::White);
+
     return true;
 }

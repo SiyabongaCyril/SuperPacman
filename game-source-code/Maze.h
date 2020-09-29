@@ -13,8 +13,11 @@ class Maze
         void MazeDoors();
         vector<sf::RectangleShape> maze;
         vector<sf::RectangleShape> Doors;
-
+        sf::Font textFont;
+        sf::Text text;
     private:
+        bool setText();
+
 };
 
 #endif // MAZE_H
