@@ -6,6 +6,10 @@ Maze::Maze():maze(),Doors()
     //Create Maze
     //Builds the frame of the maze
     //Uses vector to store coordinates of maze building blocks
+
+    //set texts for the maze
+    setText();
+
     sf::RectangleShape maze_blocks(sf::Vector2f(618,584));
 
     for( unsigned int i = 0; i<600; i++)
@@ -105,4 +109,18 @@ Maze::Maze():maze(),Doors()
             }
         }
     }
+}
+
+bool Maze::setText()
+{
+    if(!textFont.loadFromFile("resources/OstrichSans-Bold.otf"))
+    return EXIT_FAILURE;
+
+            text.setFont(textFont);
+            text.setCharacterSize(20);
+            text.setPosition(273,1);
+            text.setFillColor(sf::Color::Red);
+            text.setString("HIGH SCORE");
+
+     return true;
 }
