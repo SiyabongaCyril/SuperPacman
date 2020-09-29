@@ -24,16 +24,16 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
         {
 
             if(i == 130 && j==105 || i ==465 && j == 105||
-                    i == 130 && j==515 || i == 465 && j == 515)
+                    i == 130 && j==495 || i == 465 && j == 495)
             {
                 superB.setRadius(10);
                 superB.setFillColor(sf::Color::Blue);
                 superB.setPosition(sf::Vector2f(i,j));
                 SuperBalls.push_back(superB);
             }
-            else if(i == 210 && j ==374 || i == 370 && j == 374)
+            else if(i == 210 && j ==364 || i == 375 && j == 364)
             {
-                superB.setRadius(15);
+                superB.setRadius(12);
                 superB.setFillColor(sf::Color::Green);
                 superB.setPosition(sf::Vector2f(i,j));
                 SuperBalls.push_back(superB);
