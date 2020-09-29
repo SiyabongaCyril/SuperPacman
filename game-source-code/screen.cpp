@@ -2,11 +2,18 @@
 #include "ResourcesManager.h"
 #include "Maze.h"
 //#include "doctest.h"
+<<<<<<< HEAD
+=======
+#include <string>
+>>>>>>> f7f0f56ee19b9e63324c04664c7ec597377d8890
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
 
     splashScreen();
+
+    //Load font and set text for the scores
+    scoreTexts();
 
     //Load Pallets
     //Loads Power Pallets
@@ -144,7 +151,37 @@ cout<<"PacMan Not Loaded"<<endl;
         }
 
         window.clear(sf::Color::Black);
+<<<<<<< HEAD
 printMaze();
+=======
+
+        window.draw(getFunction.text);
+
+        numToStr = to_string(high_score);
+
+        scoreText.setString(numToStr);
+
+        window.draw(scoreText);
+
+        numToStr = to_string(score);
+
+        highScoreText.setString(numToStr);
+
+        window.draw(highScoreText);
+
+        for(int k = 0; k<getFunction.Doors.size(); k++)
+        {
+            window.draw(getFunction.Doors[k]);
+        }
+        for(int j = 0; j<getFunction.maze.size(); j++)
+        {
+            window.draw(getFunction.maze[j]);
+        }
+        for(int i = 0; i<SuperBalls.size(); i++)
+        {
+            window.draw(SuperBalls[i]);
+        }
+>>>>>>> f7f0f56ee19b9e63324c04664c7ec597377d8890
         window.draw(PacMan);
     }
     else
@@ -161,11 +198,8 @@ bool screen::splashScreen()
 {
 
     //Initialise pre-game window
-    /*
-    Load Text Font
-    Set up text to be written on the splashcreen
-    */
-    font.loadFromFile("resources/ostrich-regular.ttf");
+    //Load Text Font
+    //Set up text to be written on the splashcreen
     if(!font.loadFromFile("resources/OstrichSans-Medium.otf"))
         return EXIT_FAILURE;
 
@@ -177,6 +211,7 @@ bool screen::splashScreen()
     return true;
 }
 
+<<<<<<< HEAD
 bool screen::printMaze()
 {
     Maze getFunction;
@@ -195,4 +230,23 @@ bool screen::printMaze()
         }
 
         return true;
+=======
+bool screen::scoreTexts()
+{
+    //Load font and set text for the scores
+   if(!scoreFont.loadFromFile("resources/OstrichSans-Bold.otf"))
+    return EXIT_FAILURE;
+
+    scoreText.setFont(scoreFont);
+    scoreText.setCharacterSize(20);
+    scoreText.setPosition(73,25);
+    scoreText.setFillColor(sf::Color::White);
+
+    highScoreText.setFont(scoreFont);
+    highScoreText.setCharacterSize(20);
+    highScoreText.setPosition(273,25);
+    highScoreText.setFillColor(sf::Color::White);
+
+    return true;
+>>>>>>> f7f0f56ee19b9e63324c04664c7ec597377d8890
 }
