@@ -8,10 +8,14 @@
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
 
+    //Declare splash screen icons
     splashScreen();
 
-    //Load font and set text for the scores
+    //set text for the scores
     scoreTexts();
+
+    //Load ghosts
+    //store ghosts in a vector
 
     //Load Pallets
     //Loads Power Pallets
@@ -76,9 +80,10 @@ void screen::processEvents()
 
 void screen::render()
 {
+    ResourcesManager manager;
+
     //loads picture and stores it as a sprite
     //Animate PacMan
-    ResourcesManager manager;
 
     sf::IntRect rectPac(900,0,900,1000);
     sf::Sprite SplashScreenPacMan(ResourcesManager::GetTexture("resources/pacman.png"));
@@ -89,6 +94,7 @@ void screen::render()
         //scales PacMan to the desired size
         SplashScreenPacMan.setTextureRect(rectPac);
         SplashScreenPacMan.setPosition(sf::Vector2f(194.f,47.5));
+
         SplashScreenPacMan.scale(sf::Vector2f(0.027,0.027));
 
         if (clock.getElapsedTime().asMilliseconds() > 100.0f)
@@ -111,24 +117,14 @@ void screen::render()
     {
         Maze getFunction;
 
-
         window.clear(sf::Color::Black);
         printMaze();
         pacM();
+        createGhosts();
+        //createFruits();
+        createKeys();
 
-        window.draw(getFunction.text);
-
-        numToStr = to_string(high_score);
-
-        scoreText.setString(numToStr);
-
-        window.draw(scoreText);
-
-        numToStr = to_string(score);
-
-        highScoreText.setString(numToStr);
-
-        window.draw(highScoreText);
+        printScores();
     }
     else
     {
@@ -165,7 +161,7 @@ bool screen::pacM()
     sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
     PacMan.setTextureRect(rectPac);
     PacMan.scale(sf::Vector2f(0.027,0.027));
-    PacMan.setPosition(sf::Vector2f(80,65));
+    PacMan.setPosition(sf::Vector2f(273,65));
 
     float deltaTime = clock.restart().asSeconds();
 
@@ -193,6 +189,81 @@ bool screen::pacM()
     }
     window.draw(PacMan);
 }
+
+void screen::createGhosts()
+{
+    ResourcesManager manager;
+
+    sf::Sprite red(ResourcesManager::GetTexture("resources/redGhost.png"));
+    red.scale(sf::Vector2f(0.21,0.21));
+    red.setPosition(sf::Vector2f(255,200));
+
+    sf::Sprite pink(ResourcesManager::GetTexture("resources/pinkGhost.png"));
+    pink.scale(sf::Vector2f(0.21,0.21));
+    pink.setPosition(sf::Vector2f(329,200));
+
+    sf::Sprite orange(ResourcesManager::GetTexture("resources/orangeGhost.png"));
+    orange.scale(sf::Vector2f(0.21,0.21));
+    orange.setPosition(sf::Vector2f(255,234));
+
+    sf::Sprite blue(ResourcesManager::GetTexture("resources/blueGhost.png"));
+    blue.scale(sf::Vector2f(0.21,0.21));
+    blue.setPosition(sf::Vector2f(329,234));
+
+    window.draw(red);
+    window.draw(pink);
+    window.draw(orange);
+    window.draw(blue);
+}
+
+void screen::createKeys()
+{
+    ResourcesManager manager;
+
+    //sf::IntRect rectKey(900,0,900,1000);
+    sf::Sprite key(ResourcesManager::GetTexture("resources/key.png"));
+    //key.setTextureRect(rectKey);
+
+    for( unsigned int i = 0; i<600; i++)
+    {
+        for(unsigned int j = 0; j<600; j++)
+        {
+
+            sf::Sprite key(ResourcesManager::GetTexture("resources/key.png"));
+
+            if(i == 85 && j==65 || i == 510 && j == 65 || i == 85 && j == 525 || i == 510 && j ==  525 ||
+               i == 85 && j ==  240 || i == 510 && j ==  240 ||   i == 85 && j ==  325 || i == 510 && j ==  325 ||
+                  i == 170 && j ==  150 || i == 425 && j ==  150 || i == 170 && j ==  490 || i == 425 && j ==  490
+                  || i == 215 && j ==  325 || i == 380 && j ==  325)
+            {
+
+                key.scale(sf::Vector2f(0.128,0.128));
+                key.setPosition(sf::Vector2f(i,j));
+                Fruits.push_back(key);
+            }
+        }
+    }
+
+    for(int k = 0; k<Fruits.size(); k++)
+    {
+        window.draw(Fruits[k]);
+    }
+}
+
+void screen::printScores()
+{
+    numToStr = to_string(high_score);
+
+    scoreText.setString(numToStr);
+
+    window.draw(scoreText);
+
+    numToStr = to_string(score);
+
+    highScoreText.setString(numToStr);
+
+    window.draw(highScoreText);
+}
 bool screen::printMaze()
 {
     Maze getFunction;
@@ -209,6 +280,8 @@ bool screen::printMaze()
     {
         window.draw(SuperBalls[i]);
     }
+
+    window.draw(getFunction.text);
 
     return true;
 }

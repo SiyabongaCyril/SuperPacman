@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include "Maze.h"
 
 using namespace std;
 
@@ -13,8 +14,8 @@ class screen
         screen();
         void run();
         vector<sf::CircleShape> SuperBalls;
+        vector<sf::Sprite> Fruits ;
         bool printMaze();
-
 
     private :
         sf::Font font; //store font for texts on window
@@ -24,20 +25,25 @@ class screen
         sf::Text highScoreText;
         sf::RenderWindow window;
 
-        vector<sf::RectangleShape> Enemies;
-
     private:
         void render();
         void processEvents();
+
+        void animateSplashScreenPac();
+        void printScores();
+        void createGhosts();
+        void createFruits();
+        void createKeys();
+
         bool splashScreen(); //Sets the splasreen
         bool scoreTexts();
-        bool start = false; //Variable to check if the game is still in the splash screen/game mode
-
         bool pacM();
+
         sf::Clock clock;
-        int pos =100;
 
         string numToStr;
+        bool start = false; //Variable to check if the game is still in the splash screen/game mode
+         int pos =100;
         int high_score = 0;
         int  score = 0;
 
