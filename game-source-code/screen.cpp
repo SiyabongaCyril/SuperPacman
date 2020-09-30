@@ -121,7 +121,7 @@ void screen::render()
         printMaze();
         pacM();
         createGhosts();
-        //createFruits();
+        createFruits();
         createKeys();
 
         printScores();
@@ -210,6 +210,8 @@ void screen::createGhosts()
     blue.scale(sf::Vector2f(0.21,0.21));
     blue.setPosition(sf::Vector2f(329,234));
 
+
+
     window.draw(red);
     window.draw(pink);
     window.draw(orange);
@@ -232,14 +234,50 @@ void screen::createKeys()
             sf::Sprite key(ResourcesManager::GetTexture("resources/key.png"));
 
             if(i == 85 && j==65 || i == 510 && j == 65 || i == 85 && j == 525 || i == 510 && j ==  525 ||
-               i == 85 && j ==  240 || i == 510 && j ==  240 ||   i == 85 && j ==  325 || i == 510 && j ==  325 ||
-                  i == 170 && j ==  150 || i == 425 && j ==  150 || i == 170 && j ==  490 || i == 425 && j ==  490
-                  || i == 215 && j ==  325 || i == 380 && j ==  325)
+                    i == 85 && j ==  240 || i == 510 && j ==  240 ||   i == 85 && j ==  325 || i == 510 && j ==  325 ||
+                    i == 170 && j ==  150 || i == 425 && j ==  150 || i == 170 && j ==  490 || i == 425 && j ==  490
+                    || i == 215 && j ==  325 || i == 380 && j ==  325 || i == 300 && j == 405)
             {
 
                 key.scale(sf::Vector2f(0.128,0.128));
                 key.setPosition(sf::Vector2f(i,j));
-                Fruits.push_back(key);
+                Keys.push_back(key);
+            }
+        }
+    }
+
+    for(int k = 0; k<Keys.size(); k++)
+    {
+        window.draw(Keys[k]);
+    }
+}
+
+void screen::createFruits()
+{
+    ResourcesManager manager;
+
+    for( unsigned int i = 0; i<600; i++)
+    {
+        for(unsigned int j = 0; j<600; j++)
+        {
+
+            sf::Sprite corn(ResourcesManager::GetTexture("resources/pear.png"));
+
+            if(i == 210 && j== 103 || i == 240 && j == 103 || i == 240 && j == 103 || i == 270 && j == 103 || i == 300
+                && j == 103 || i == 330 && j == 103 || i == 360 && j == 103 || i == 390 && j == 103 || i == 170 && j == 195 ||
+                 i == 130 && j == 195 || i == 425 && j == 195 || i ==  465 &&  j  == 195 || i ==  170 &&  j  == 235 ||
+                 i ==  170 &&  j  == 275 || i ==  425 &&  j  == 235 || i ==  425 &&  j  == 275  || i ==  465 &&  j  == 400 ||
+                 i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400|| i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400 ||
+                 i ==  465 &&  j  == 360   || i ==  130 &&  j  == 400 || i ==  130 &&  j  == 360 || i == 210 && j== 525 ||
+                 i == 240 && j == 525 || i == 240 && j == 525 || i == 270 && j == 525 || i == 300 && j == 525 ||
+                 i == 330 && j == 525 || i == 360 && j == 525 || i == 390 && j == 525 || i == 295 && j == 445 ||
+                 i == 210 && j == 445 || i == 380 && j == 445 ||  i == 210 && j == 405 || i == 380 && j == 405 ||
+                 i == 250 && j == 360 || i == 340 && j == 360)
+            {
+
+                corn.scale(sf::Vector2f(0.12,0.12));
+                corn.setPosition(sf::Vector2f(i,j));
+                Fruits.push_back(corn);
             }
         }
     }

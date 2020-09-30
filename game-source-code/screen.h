@@ -14,7 +14,9 @@ class screen
         screen();
         void run();
         vector<sf::CircleShape> SuperBalls;
-        vector<sf::Sprite> Fruits ;
+        vector<sf::Sprite> Keys;
+        vector<sf::Sprite> Fruits;
+
         bool printMaze();
 
     private :
