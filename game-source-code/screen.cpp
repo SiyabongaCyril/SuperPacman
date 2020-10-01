@@ -23,7 +23,7 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
         for(unsigned int j = 0; j<600; j++)
         {
 
-            if(i == 130 && j==105 || i ==465 && j == 105||
+            if(i == 130 && j==115 || i ==465 && j == 115||
                     i == 130 && j==495 || i == 465 && j == 495)
             {
                 superB.setRadius(10);
@@ -46,6 +46,7 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 void screen::run()
 {
     clock.restart();
+    pacTimer.restart();
     while(window.isOpen())
     {
         processEvents();
@@ -156,32 +157,52 @@ bool screen::pacM()
     sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
     PacMan.setTextureRect(rectPac);
     PacMan.scale(sf::Vector2f(0.027,0.027));
+
     PacMan.setPosition(sf::Vector2f(273,65));
 
-    float deltaTime = clock.restart().asSeconds();
 
-    //scales PacMan to the desired size
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
-        //PacMan.move(sf::Vector2f(10, 0));
-        PacMan.setPosition(sf::Vector2f(80+pos,65));
+    if(!isPlaying)
+    {
+        isPlaying = true;
+        clock.restart();
+        PacMan.setPosition(sf::Vector2f(80,65));
     }
-
-    //Divides the PacMan sprite into two
-    //Allocates time and switches between sections of sprite to create animation
-    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+    }
+    float position=0;
+    if(isPlaying)
     {
-        if(rectPac.left == 900)
+        float deltaTime = clock.restart().asSeconds();
+        //scales PacMan to the desired size
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            rectPac.left = 0;
+            position = position+pos*deltaTime;
         }
-        else
-            rectPac.left +=900;
-        PacMan.setTextureRect(rectPac);
+        PacMan.move(sf::Vector2f(pos*deltaTime, 0));
 
-        if (clock.getElapsedTime().asMilliseconds() > 200.0f)
-            clock.restart();
+        PacMan.setPosition(sf::Vector2f(position+pos*deltaTime,65));
+
     }
+
+    /*if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+        {
+            if(rectPac.left == 900)
+            {
+                rectPac.left = 0;
+            }
+            else
+                rectPac.left +=900;
+            PacMan.setTextureRect(rectPac);
+
+            if (pacTimer.getElapsedTime().asMilliseconds() > 150.0f)
+                pacTimer.restart();
+        }*/
+         //Divides the PacMan sprite into two
+    //Allocates time and switches between sections of sprite to create animation
+
     window.draw(PacMan);
 }
 

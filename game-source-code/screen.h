@@ -40,13 +40,16 @@ class screen
 
         bool splashScreen(); //Sets the splasreen
         bool scoreTexts();
+        bool start = false; //Variable to check if the game is still in the splash screen/game mode
+        bool isPlaying = false;
+
         bool pacM();
 
         sf::Clock clock;
+        sf::Clock pacTimer;
+        const float pos =400.f;
 
         string numToStr;
-        bool start = false; //Variable to check if the game is still in the splash screen/game mode
-         int pos =100;
         int high_score = 0;
         int  score = 0;
         int create_ghost = 0;
