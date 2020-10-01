@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 #include "Maze.h"
 
 using namespace std;
@@ -33,9 +34,9 @@ class screen
 
         void animateSplashScreenPac();
         void printScores();
-        void createGhosts();
         void createFruits();
         void createKeys();
+        void Ghosts();
 
         bool splashScreen(); //Sets the splasreen
         bool scoreTexts();
@@ -48,6 +49,9 @@ class screen
          int pos =100;
         int high_score = 0;
         int  score = 0;
+        int create_ghost = 0;
+
+        int random = 0;
 
 };
 

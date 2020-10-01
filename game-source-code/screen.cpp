@@ -1,7 +1,6 @@
 #include "screen.h"
 #include "ResourcesManager.h"
 #include "Maze.h"
-//#include "doctest.h"
 
 #include <string>
 
@@ -13,9 +12,6 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 
     //set text for the scores
     scoreTexts();
-
-    //Load ghosts
-    //store ghosts in a vector
 
     //Load Pallets
     //Loads Power Pallets
@@ -70,7 +66,7 @@ void screen::processEvents()
         case sf::Event::EventType::KeyPressed: //called whenever a key is pressed (Keeps track of all the keys)
             if(event.key.code == sf::Keyboard::Escape)
                 window.close(); //key can be closed by close button and space
-            if(event.key.code == sf::Keyboard::Enter)
+            if(event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Space)
                 start = true;
         default:
             break;
@@ -120,7 +116,7 @@ void screen::render()
         window.clear(sf::Color::Black);
         printMaze();
         pacM();
-        createGhosts();
+        Ghosts();
         createFruits();
         createKeys();
 
@@ -135,10 +131,8 @@ void screen::render()
     window.display();
 }
 
-
 bool screen::splashScreen()
 {
-
     //Initialise pre-game window
     //Load Text Font
     //Set up text to be written on the splashcreen
@@ -149,12 +143,13 @@ bool screen::splashScreen()
     startUpMessage.setCharacterSize(20);
     startUpMessage.setPosition(30.f, 50.f);
     startUpMessage.setFillColor(sf::Color::White);
-    startUpMessage.setString("Welcome to Super Pac-Man\n\nPress Enter to start the game, Esc to exit\n\nTo play the game, use the arrow keys: Down, Up, Left, Right ");
+    startUpMessage.setString("Welcome to Super Pac-Man\n\nPress Enter/Space to start the game, Esc to exit\n\nTo play the game, use the arrow keys: Down, Up, Left, Right ");
     return true;
 }
-//pacman function
+
 bool screen::pacM()
 {
+    //pacman function
     ResourcesManager manager;
 
     sf::IntRect rectPac(900,0,900,1000);
@@ -190,8 +185,11 @@ bool screen::pacM()
     window.draw(PacMan);
 }
 
-void screen::createGhosts()
+void screen::Ghosts()
 {
+    //Load ghosts
+    //store ghosts
+    //Load ghosts and display them in the game-mode window in the maize (at the middle of the maize)
     ResourcesManager manager;
 
     sf::Sprite red(ResourcesManager::GetTexture("resources/redGhost.png"));
@@ -210,8 +208,6 @@ void screen::createGhosts()
     blue.scale(sf::Vector2f(0.21,0.21));
     blue.setPosition(sf::Vector2f(329,234));
 
-
-
     window.draw(red);
     window.draw(pink);
     window.draw(orange);
@@ -222,9 +218,8 @@ void screen::createKeys()
 {
     ResourcesManager manager;
 
-    //sf::IntRect rectKey(900,0,900,1000);
+    //load sprite for keys, display it on the maize in the game-mode window
     sf::Sprite key(ResourcesManager::GetTexture("resources/key.png"));
-    //key.setTextureRect(rectKey);
 
     for( unsigned int i = 0; i<600; i++)
     {
@@ -256,6 +251,7 @@ void screen::createFruits()
 {
     ResourcesManager manager;
 
+    //Load Sprite for fruits, initialise fruits, store them in a vector and display them on the game-mode window
     for( unsigned int i = 0; i<600; i++)
     {
         for(unsigned int j = 0; j<600; j++)
@@ -264,15 +260,15 @@ void screen::createFruits()
             sf::Sprite corn(ResourcesManager::GetTexture("resources/pear.png"));
 
             if(i == 210 && j== 103 || i == 240 && j == 103 || i == 240 && j == 103 || i == 270 && j == 103 || i == 300
-                && j == 103 || i == 330 && j == 103 || i == 360 && j == 103 || i == 390 && j == 103 || i == 170 && j == 195 ||
-                 i == 130 && j == 195 || i == 425 && j == 195 || i ==  465 &&  j  == 195 || i ==  170 &&  j  == 235 ||
-                 i ==  170 &&  j  == 275 || i ==  425 &&  j  == 235 || i ==  425 &&  j  == 275  || i ==  465 &&  j  == 400 ||
-                 i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400|| i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400 ||
-                 i ==  465 &&  j  == 360   || i ==  130 &&  j  == 400 || i ==  130 &&  j  == 360 || i == 210 && j== 525 ||
-                 i == 240 && j == 525 || i == 240 && j == 525 || i == 270 && j == 525 || i == 300 && j == 525 ||
-                 i == 330 && j == 525 || i == 360 && j == 525 || i == 390 && j == 525 || i == 295 && j == 445 ||
-                 i == 210 && j == 445 || i == 380 && j == 445 ||  i == 210 && j == 405 || i == 380 && j == 405 ||
-                 i == 250 && j == 360 || i == 340 && j == 360)
+                    && j == 103 || i == 330 && j == 103 || i == 360 && j == 103 || i == 390 && j == 103 || i == 170 && j == 195 ||
+                    i == 130 && j == 195 || i == 425 && j == 195 || i ==  465 &&  j  == 195 || i ==  170 &&  j  == 235 ||
+                    i ==  170 &&  j  == 275 || i ==  425 &&  j  == 235 || i ==  425 &&  j  == 275  || i ==  465 &&  j  == 400 ||
+                    i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400|| i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400 ||
+                    i ==  465 &&  j  == 360   || i ==  130 &&  j  == 400 || i ==  130 &&  j  == 360 || i == 210 && j== 525 ||
+                    i == 240 && j == 525 || i == 240 && j == 525 || i == 270 && j == 525 || i == 300 && j == 525 ||
+                    i == 330 && j == 525 || i == 360 && j == 525 || i == 390 && j == 525 || i == 295 && j == 445 ||
+                    i == 210 && j == 445 || i == 380 && j == 445 ||  i == 210 && j == 405 || i == 380 && j == 405 ||
+                    i == 250 && j == 360 || i == 340 && j == 360)
             {
 
                 corn.scale(sf::Vector2f(0.12,0.12));
@@ -290,6 +286,7 @@ void screen::createFruits()
 
 void screen::printScores()
 {
+    //Convert new scores to strings, load them into the sf text variables and display them on the game-mode window
     numToStr = to_string(high_score);
 
     scoreText.setString(numToStr);
@@ -302,6 +299,7 @@ void screen::printScores()
 
     window.draw(highScoreText);
 }
+
 bool screen::printMaze()
 {
     Maze getFunction;
@@ -323,6 +321,7 @@ bool screen::printMaze()
 
     return true;
 }
+
 bool screen::scoreTexts()
 {
     //Load font and set text for the scores
