@@ -11,6 +11,7 @@ using namespace std;
 int main()
 {
    screen pop;
+
    pop.run();
 
     return EXIT_SUCCESS;

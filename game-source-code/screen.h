@@ -27,6 +27,7 @@ class screen
         sf::Text scoreText;
         sf::Text highScoreText;
         sf::RenderWindow window;
+        sf::Vector2f position;
 
     private:
         void render();
@@ -52,10 +53,15 @@ class screen
         string numToStr;
         int high_score = 0;
         int  score = 0;
-        int create_ghost = 0;
+        int create_pacman = 0;
 
-        int random = 0;
-
+        //variables for controlling pacma
+        bool moving = false;
+        bool trackRight = false;
+        bool trackLeft = false;
+        bool trackUp = false;
+        bool trackDown = false;
+        bool check;
 };
 
 #endif // SCREEN_H

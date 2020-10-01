@@ -69,6 +69,29 @@ void screen::processEvents()
                 window.close(); //key can be closed by close button and space
             if(event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Space)
                 start = true;
+
+            //Events to control pacMan
+            if(event.key.code == sf::Keyboard::Right)
+                moving = true;
+            if(event.key.code == sf::Keyboard::Up)
+                moving = true;
+            if(event.key.code == sf::Keyboard::Down)
+                moving = true;
+            if(event.key.code == sf::Keyboard::Left)
+                moving = true;
+            break;
+
+        case sf::Event::EventType::KeyReleased: //called when a key is released
+            if(event.key.code == sf::Keyboard::Right)
+                moving = false;
+            if(event.key.code == sf::Keyboard::Up)
+                moving = false;
+            if(event.key.code == sf::Keyboard::Down)
+                moving = false;
+            if(event.key.code == sf::Keyboard::Left)
+                moving = false;
+            break;
+
         default:
             break;
         }
@@ -158,22 +181,27 @@ bool screen::pacM()
     PacMan.setTextureRect(rectPac);
     PacMan.scale(sf::Vector2f(0.027,0.027));
 
-    PacMan.setPosition(sf::Vector2f(273,65));
-
-
-
-
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    if(create_pacman == 0)
     {
-    if(!isPlaying)
+        PacMan.setPosition(sf::Vector2f(273,75));
+        ++create_pacman;
+    }
+    else
+        PacMan.setPosition(position);
+    /*if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
-        isPlaying = true;
-        clock.restart();
-        PacMan.setPosition(sf::Vector2f(80,65));
-    }
-    }
-    float position=0;
-    if(isPlaying)
+        if(!isPlaying)
+        {
+            isPlaying = true;
+            clock.restart();
+            PacMan.setPosition(sf::Vector2f(80,65));
+        }
+    }*/
+
+
+    //float position=0;
+
+    /*if(isPlaying)
     {
         float deltaTime = clock.restart().asSeconds();
         //scales PacMan to the desired size
@@ -185,9 +213,9 @@ bool screen::pacM()
 
         PacMan.setPosition(sf::Vector2f(position+pos*deltaTime,65));
 
-    }
+    }*/
 
-    /*if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
         {
             if(rectPac.left == 900)
             {
@@ -199,9 +227,71 @@ bool screen::pacM()
 
             if (pacTimer.getElapsedTime().asMilliseconds() > 150.0f)
                 pacTimer.restart();
-        }*/
-         //Divides the PacMan sprite into two
-    //Allocates time and switches between sections of sprite to create animation
+        }
+    //Divides the PacMan sprite into two
+    //Allocates time and switches between sections of sprite to create animation */
+
+    if(moving && start)
+        check = true;
+
+    if (check)
+    {
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+        {
+            PacMan.move(sf::Vector2f(0,10));
+            trackDown = true;
+            trackRight = false;
+            trackLeft = false;
+            trackUp = false;
+        }
+        else if(trackDown)
+        {
+            PacMan.move(sf::Vector2f(0,10));
+        }
+
+        //Move the object
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+        {
+            PacMan.move(sf::Vector2f(10,0));
+            trackRight = true;
+            trackLeft = false;
+            trackDown = false;
+            trackUp = false;
+        }
+        else if(trackRight)
+        {
+            PacMan.move(sf::Vector2f(10,0));
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+        {
+            PacMan.move(sf::Vector2f(0, -10));
+            trackUp = true;
+            trackRight = false;
+            trackLeft = false;
+            trackDown = false;
+        }
+        else if(trackUp)
+        {
+            PacMan.move(sf::Vector2f(0,-10));
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+        {
+            PacMan.move(sf::Vector2f(-10,0));
+            trackLeft = true;
+            trackRight = false;
+            trackDown = false;
+            trackUp = false;
+        }
+        else if(trackLeft)
+        {
+            PacMan.move(sf::Vector2f(-10,0));
+        }
+    }
+
+    position = PacMan.getPosition();
 
     window.draw(PacMan);
 }
@@ -249,7 +339,7 @@ void screen::createKeys()
 
             sf::Sprite key(ResourcesManager::GetTexture("resources/key.png"));
 
-            if(i == 85 && j==65 || i == 510 && j == 65 || i == 85 && j == 525 || i == 510 && j ==  525 ||
+            if(i == 85 && j== 75 || i == 510 && j == 75 || i == 85 && j == 525 || i == 510 && j ==  525 ||
                     i == 85 && j ==  240 || i == 510 && j ==  240 ||   i == 85 && j ==  325 || i == 510 && j ==  325 ||
                     i == 170 && j ==  150 || i == 425 && j ==  150 || i == 170 && j ==  490 || i == 425 && j ==  490
                     || i == 215 && j ==  325 || i == 380 && j ==  325 || i == 300 && j == 405)
@@ -278,10 +368,10 @@ void screen::createFruits()
         for(unsigned int j = 0; j<600; j++)
         {
 
-            sf::Sprite corn(ResourcesManager::GetTexture("resources/pear.png"));
+            sf::Sprite pear(ResourcesManager::GetTexture("resources/pear.png"));
 
-            if(i == 210 && j== 103 || i == 240 && j == 103 || i == 240 && j == 103 || i == 270 && j == 103 || i == 300
-                    && j == 103 || i == 330 && j == 103 || i == 360 && j == 103 || i == 390 && j == 103 || i == 170 && j == 195 ||
+            if(i == 210 && j== 113 || i == 240 && j == 113 || i == 240 && j == 113 || i == 270 && j == 113 || i == 300
+                    && j == 113 || i == 330 && j == 113 || i == 360 && j == 113 || i == 390 && j == 113 || i == 170 && j == 195 ||
                     i == 130 && j == 195 || i == 425 && j == 195 || i ==  465 &&  j  == 195 || i ==  170 &&  j  == 235 ||
                     i ==  170 &&  j  == 275 || i ==  425 &&  j  == 235 || i ==  425 &&  j  == 275  || i ==  465 &&  j  == 400 ||
                     i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400|| i ==  465 &&  j  == 360  || i ==  465 &&  j  == 400 ||
@@ -292,9 +382,9 @@ void screen::createFruits()
                     i == 250 && j == 360 || i == 340 && j == 360)
             {
 
-                corn.scale(sf::Vector2f(0.12,0.12));
-                corn.setPosition(sf::Vector2f(i,j));
-                Fruits.push_back(corn);
+                pear.scale(sf::Vector2f(0.12,0.12));
+                pear.setPosition(sf::Vector2f(i,j));
+                Fruits.push_back(pear);
             }
         }
     }
