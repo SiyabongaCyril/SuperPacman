@@ -135,14 +135,13 @@ void screen::render()
     //Start the game mode if the player enters the game mode
     if(start)
     {
-        Maze getFunction;
 
         window.clear(sf::Color::Black);
         printMaze();
         pacM();
-        Ghosts();
         createFruits();
         createKeys();
+        Ghosts();
 
         printScores();
     }
@@ -181,41 +180,38 @@ bool screen::pacM()
     PacMan.setTextureRect(rectPac);
     PacMan.scale(sf::Vector2f(0.027,0.027));
 
+    /*if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+    {
+        if(rectPac.left == 900)
+        {
+            rectPac.left = 0;
+        }
+        else
+            rectPac.left +=900;
+        PacMan.setTextureRect(rectPac);
+
+        if (clock.getElapsedTime().asMilliseconds() > 200.0f)
+            clock.restart();
+    }*/
+
     if(create_pacman == 0)
     {
         PacMan.setPosition(sf::Vector2f(273,75));
         ++create_pacman;
     }
     else
+    {
         PacMan.setPosition(position);
-    /*if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    }
+
+    //Divides the PacMan sprite into two
+    //Allocates time and switches between sections of sprite to create animation
+    if(moving && start)
+        check = true;
+
+    if (check)
     {
-        if(!isPlaying)
-        {
-            isPlaying = true;
-            clock.restart();
-            PacMan.setPosition(sf::Vector2f(80,65));
-        }
-    }*/
-
-
-    //float position=0;
-
-    /*if(isPlaying)
-    {
-        float deltaTime = clock.restart().asSeconds();
-        //scales PacMan to the desired size
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            position = position+pos*deltaTime;
-        }
-        PacMan.move(sf::Vector2f(pos*deltaTime, 0));
-
-        PacMan.setPosition(sf::Vector2f(position+pos*deltaTime,65));
-
-    }*/
-
-    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+        if (clock.getElapsedTime().asMilliseconds() > 100.0f)
         {
             if(rectPac.left == 900)
             {
@@ -225,18 +221,9 @@ bool screen::pacM()
                 rectPac.left +=900;
             PacMan.setTextureRect(rectPac);
 
-            if (pacTimer.getElapsedTime().asMilliseconds() > 150.0f)
-                pacTimer.restart();
+            if (clock.getElapsedTime().asMilliseconds() > 200.0f)
+                clock.restart();
         }
-    //Divides the PacMan sprite into two
-    //Allocates time and switches between sections of sprite to create animation */
-
-    if(moving && start)
-        check = true;
-
-    if (check)
-    {
-
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
         {
             PacMan.move(sf::Vector2f(0,10));
@@ -302,22 +289,78 @@ void screen::Ghosts()
     //store ghosts
     //Load ghosts and display them in the game-mode window in the maize (at the middle of the maize)
     ResourcesManager manager;
+    Maze getFunction;
 
     sf::Sprite red(ResourcesManager::GetTexture("resources/redGhost.png"));
-    red.scale(sf::Vector2f(0.21,0.21));
-    red.setPosition(sf::Vector2f(255,200));
+    red.scale(sf::Vector2f(0.19,0.19));
 
     sf::Sprite pink(ResourcesManager::GetTexture("resources/pinkGhost.png"));
-    pink.scale(sf::Vector2f(0.21,0.21));
-    pink.setPosition(sf::Vector2f(329,200));
+    pink.scale(sf::Vector2f(0.19,0.19));
 
     sf::Sprite orange(ResourcesManager::GetTexture("resources/orangeGhost.png"));
-    orange.scale(sf::Vector2f(0.21,0.21));
-    orange.setPosition(sf::Vector2f(255,234));
+    orange.scale(sf::Vector2f(0.19,0.19));
 
     sf::Sprite blue(ResourcesManager::GetTexture("resources/blueGhost.png"));
-    blue.scale(sf::Vector2f(0.21,0.21));
-    blue.setPosition(sf::Vector2f(329,234));
+    blue.scale(sf::Vector2f(0.19,0.19));
+//Ghost Movement
+    if(create_ghosts == 0)
+    {
+        red.setPosition(sf::Vector2f(255,200));
+        pink.setPosition(sf::Vector2f(329,200));
+        orange.setPosition(sf::Vector2f(255,234));
+        blue.setPosition(sf::Vector2f(329,234));
+        ++create_ghosts;
+    }
+    else
+    {
+        red.setPosition(RedPos);
+        blue.setPosition(BluePos);
+        pink.setPosition(PinkPos);
+        orange.setPosition(OrangePos);
+    }
+
+    if(trackDown|| trackLeft||trackRight||trackUp)
+    {
+        for (unsigned i = 0; i<getFunction.maze.size(); i++)
+        {
+            if(red.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
+            {
+                moveGhost =false;
+                cout<<"Collision"<<endl;
+            }
+
+            if(moveGhost)
+            {
+                if(trackLeft){red.move(sf::Vector2f(0,-0.1));}
+                else if(trackUp){red.move(sf::Vector2f(0,0.1));}
+                else if(trackDown){red.move(sf::Vector2f(-0.1,0));}
+                else if(trackRight){red.move(sf::Vector2f(0.1,0));}
+
+                // blue.move(sf::Vector2f(10,0));
+                // orange.move(sf::Vector2f(0,10));
+                //pink.move(sf::Vector2f(-10,0));
+            }
+            else if(!moveGhost)
+            {
+                red.move(sf::Vector2f(0,0));
+                collision =true;
+            }
+
+             if(collision)
+            {
+                if(trackLeft){red.move(sf::Vector2f(0,0.1));}
+                else if(trackUp){red.move(sf::Vector2f(0,-0.1));}
+                else if(trackDown){red.move(sf::Vector2f(0.1,0));}
+                else if(trackRight){red.move(sf::Vector2f(-0.1,0));}
+                collision =false;
+                //moveGhost =true;
+            }
+        }
+    }
+    RedPos = red.getPosition();
+    BluePos = blue.getPosition();
+    PinkPos = pink.getPosition();
+    OrangePos = orange.getPosition();
 
     window.draw(red);
     window.draw(pink);

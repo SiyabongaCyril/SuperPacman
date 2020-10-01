@@ -28,6 +28,10 @@ class screen
         sf::Text highScoreText;
         sf::RenderWindow window;
         sf::Vector2f position;
+        sf::Vector2f RedPos;
+        sf::Vector2f BluePos;
+        sf::Vector2f PinkPos;
+        sf::Vector2f OrangePos;
 
     private:
         void render();
@@ -43,17 +47,20 @@ class screen
         bool scoreTexts();
         bool start = false; //Variable to check if the game is still in the splash screen/game mode
         bool isPlaying = false;
+        bool moveGhost = true;
+        bool collision = false;
 
         bool pacM();
 
         sf::Clock clock;
         sf::Clock pacTimer;
-        const float pos =400.f;
+        int moveBy;
 
         string numToStr;
         int high_score = 0;
         int  score = 0;
         int create_pacman = 0;
+        int create_ghosts = 0;
 
         //variables for controlling pacma
         bool moving = false;
