@@ -8,12 +8,19 @@
 #include "Maze.h"
 
 using namespace std;
-
+class scoreShows{};
+class fruitsLoaded{};
+class EventDeclared{};
+class GhostsDrawn{};
+class KeysLoaded{};
 class screen
 {
     public:
         screen();
         void run();
+        bool render();
+        void processEvents();
+        bool splashScreen(); //Sets the splasreen
         vector<sf::CircleShape> SuperBalls;
         vector<sf::Sprite> Keys;
         vector<sf::Sprite> storeKeys;
@@ -22,6 +29,12 @@ class screen
         vector<sf::RectangleShape> ManageDoors;
 
         bool printMaze();
+        int scoreTexts();
+        void printScores();
+        void createFruits();
+        bool pacM();
+        void Ghosts();
+        void createKeys();
 
     private :
         sf::Font font; //store font for texts on window
@@ -31,37 +44,38 @@ class screen
         sf::Text highScoreText;
         sf::RenderWindow window;
         sf::Vector2f position;
+        sf::Vector2f RedPos;
+        sf::Vector2f BluePos;
+        sf::Vector2f PinkPos;
+        sf::Vector2f OrangePos;
 
     private:
-        void render();
-        void processEvents();
 
         void animateSplashScreenPac();
-        void printScores();
-        void createFruits();
-        void createKeys();
-        void Ghosts();
 
-        bool splashScreen(); //Sets the splasreen
-        bool scoreTexts();
         bool start = false; //Variable to check if the game is still in the splash screen/game mode
         bool isPlaying = false;
+        bool moveGhost = true;
+        bool collision = false;
 
-        bool pacM();
 
         sf::Clock clock;
         sf::Clock pacTimer;
-        const float pos =400.f;
+        int moveBy;
 
         string numToStr;
         int high_score = 0;
         int  score = 0;
         int randomDoor;
         int create_pacman = 0;
+<<<<<<< HEAD
         int create_keys = 0;
         int create_fruits = 0;
         int create_doors = 0;
         int track_doors = 1;
+=======
+        int create_ghosts = 0;
+>>>>>>> c903a1f69f188a7a2f6f77d4f4f15ff3c7524c1b
 
         //variables for controlling pacma
         bool moving = false;
