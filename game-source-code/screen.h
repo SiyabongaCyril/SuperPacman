@@ -17,9 +17,9 @@ class screen
 {
     public:
         screen();
-        void run();
+        bool run();
         bool render();
-        void processEvents();
+        bool processEvents();
         bool splashScreen(); //Sets the splasreen
         vector<sf::CircleShape> SuperBalls;
         vector<sf::Sprite> Keys;
@@ -30,11 +30,11 @@ class screen
 
         bool printMaze();
         int scoreTexts();
-        void printScores();
-        void createFruits();
+        bool printScores();
+        bool createFruits();
         bool pacM();
-        void Ghosts();
-        void createKeys();
+        bool Ghosts();
+        bool createKeys();
 
     private :
         sf::Font font; //store font for texts on window
@@ -51,8 +51,6 @@ class screen
 
     private:
 
-        void animateSplashScreenPac();
-
         bool start = false; //Variable to check if the game is still in the splash screen/game mode
         bool isPlaying = false;
         bool moveGhost = true;
@@ -68,14 +66,13 @@ class screen
         int  score = 0;
         int randomDoor;
         int create_pacman = 0;
-<<<<<<< HEAD
+
         int create_keys = 0;
         int create_fruits = 0;
         int create_doors = 0;
         int track_doors = 1;
-=======
+
         int create_ghosts = 0;
->>>>>>> c903a1f69f188a7a2f6f77d4f4f15ff3c7524c1b
 
         //variables for controlling pacma
         bool moving = false;

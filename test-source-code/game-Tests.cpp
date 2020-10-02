@@ -32,25 +32,29 @@ TEST_CASE ("Splash screen created")
     CHECK(Screen.splashScreen());
 }
 
+
 TEST_CASE ("Maze has been printed")
 {
     screen maze;
     CHECK(maze.printMaze());
 }
 
-TEST_CASE ("The score text is displayed")
+/*TEST_CASE ("The score text is displayed")
 {
     screen score;
     CHECK(score.scoreTexts()==0);
-    CHECK_THROWS_AS(score.printScores(),scoreShows);
+    CHECK(score.printScores());
 
-}
+}*/
 
+
+/*
 TEST_CASE ("Fruits are loaded")
 {
     screen fruits;
-    CHECK_THROWS_AS(fruits.createFruits(), fruitsLoaded);
+    CHECK(fruits.createFruits());
 }
+
 
 TEST_CASE ("Checks High Score text")
 {
@@ -61,7 +65,7 @@ TEST_CASE ("Checks High Score text")
 TEST_CASE ("Event Created")
 {
     screen event;
-    CHECK_THROWS_AS(event.processEvents(),EventDeclared);
+    CHECK(event.processEvents());
 }
 
 TEST_CASE("Check if pacmann is drawn on the window")
@@ -73,11 +77,11 @@ TEST_CASE("Check if pacmann is drawn on the window")
 TEST_CASE("Check ii ghosts are drawn on the window")
 {
     screen ghosts;
-    CHECK_THROWS_AS(ghosts.Ghosts(),GhostsDrawn);
+    CHECK(ghosts.Ghosts());
 }
 
 TEST_CASE("Keys have been loaded to the maze")
 {
     screen keys;
-    CHECK_THROWS_AS(keys.createKeys(),KeysLoaded);
-}
+    CHECK(keys.createKeys());
+}*/

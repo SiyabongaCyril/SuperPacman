@@ -46,7 +46,7 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 
 }
 //Window Setup
-void screen::run()
+bool screen::run()
 {
     clock.restart();
     pacTimer.restart();
@@ -55,9 +55,10 @@ void screen::run()
         processEvents();
         render();
     }
+    return true;
 }
 
-void screen::processEvents()
+bool screen::processEvents()
 {
     sf::Event event;
     while(window.pollEvent(event))
@@ -103,7 +104,8 @@ void screen::processEvents()
             break;
         }
     }
-    throw EventDeclared{};
+    //throw EventDeclared{};
+    return true;
 }
 
 bool screen::render()
@@ -181,7 +183,7 @@ bool screen::splashScreen()
 
 bool screen::pacM()
 {
-    //pacman function
+   //pacman function
     ResourcesManager manager;
 
     Maze getFunction;
@@ -191,27 +193,12 @@ bool screen::pacM()
     PacMan.setTextureRect(rectPac);
     PacMan.scale(sf::Vector2f(0.025,0.025));
 
-    /*if (clock.getElapsedTime().asMilliseconds() > 100.0f)
-    {
-        if(rectPac.left == 900)
-        {
-            rectPac.left = 0;
-        }
-        else
-            rectPac.left +=900;
-        PacMan.setTextureRect(rectPac);
-
-        if (clock.getElapsedTime().asMilliseconds() > 200.0f)
-            clock.restart();
-    }*/
-
     if(create_pacman == 0)
     {
         PacMan.setPosition(sf::Vector2f(273,74));
         create_pacman = 1;
     }
     else
-<<<<<<< HEAD
         PacMan.setPosition(position);
 
     if(moving && start)
@@ -244,22 +231,6 @@ bool screen::pacM()
 
             }
             else if(trackDown)
-=======
-    {
-        PacMan.setPosition(position);
-    }
-
-    //Divides the PacMan sprite into two
-    //Allocates time and switches between sections of sprite to create animation
-    if(moving && start)
-        check = true;
-
-    if (check)
-    {
-        if (clock.getElapsedTime().asMilliseconds() > 100.0f)
-        {
-            if(rectPac.left == 900)
->>>>>>> c903a1f69f188a7a2f6f77d4f4f15ff3c7524c1b
             {
                 if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
                 {
@@ -274,7 +245,6 @@ bool screen::pacM()
 
             }
 
-<<<<<<< HEAD
             //Move the object
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
             {
@@ -325,23 +295,6 @@ bool screen::pacM()
                     trackLeft = false;
                     trackDown = false;
                 }
-=======
-            if (clock.getElapsedTime().asMilliseconds() > 200.0f)
-                clock.restart();
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-        {
-            PacMan.move(sf::Vector2f(0,10));
-            trackDown = true;
-            trackRight = false;
-            trackLeft = false;
-            trackUp = false;
-        }
-        else if(trackDown)
-        {
-            PacMan.move(sf::Vector2f(0,10));
-        }
->>>>>>> c903a1f69f188a7a2f6f77d4f4f15ff3c7524c1b
 
             }
             else if(trackUp)
@@ -409,7 +362,7 @@ bool screen::pacM()
         }
     }
 
-    for(unsigned int k=0; k<storeFruits.size(); k++)
+    for(unsigned int k=0; k<Fruits.size(); k++)
     {
         if(PacMan.getGlobalBounds().intersects(storeFruits[k].getGlobalBounds()))
         {
@@ -420,10 +373,11 @@ bool screen::pacM()
     }
 
     window.draw(PacMan);
+
     return true;
 }
 
-void screen::Ghosts()
+bool screen::Ghosts()
 {
     //Load ghosts
     //store ghosts
@@ -530,10 +484,12 @@ void screen::Ghosts()
     window.draw(pink);
     window.draw(orange);
     window.draw(blue);
-    throw GhostsDrawn{};
+
+    return true;
+    //throw GhostsDrawn{};
 }
 
-void screen::createKeys()
+bool screen::createKeys()
 {
     ResourcesManager manager;
 
@@ -569,10 +525,11 @@ void screen::createKeys()
     {
         window.draw(Keys[k]);
     }
-    throw KeysLoaded{};
+    //throw KeysLoaded{};
+    return true;
 }
 
-void screen::createFruits()
+bool screen::createFruits()
 {
     ResourcesManager manager;
 
@@ -603,7 +560,6 @@ void screen::createFruits()
                     pear.setPosition(sf::Vector2f(i,j));
                     Fruits.push_back(pear);
                     storeFruits.push_back(pear);
-
                 }
 
             }
@@ -617,10 +573,9 @@ void screen::createFruits()
             window.draw(storeFruits[k]);
         }
     }
-<<<<<<< HEAD
     else
     {
-         for(int k = 0; k<storeFruits.size(); k++)
+        for(int k = 0; k<storeFruits.size(); k++)
         {
             window.draw(storeFruits[k]);
         }
@@ -628,12 +583,11 @@ void screen::createFruits()
 
     create_fruits = 1;
 
-=======
-    throw fruitsLoaded{};
->>>>>>> c903a1f69f188a7a2f6f77d4f4f15ff3c7524c1b
+    //throw fruitsLoaded{};
+    return true;
 }
 
-void screen::printScores()
+bool screen::printScores()
 {
     //Convert new scores to strings, load them into the sf text variables and display them on the game-mode window
     numToStr = to_string(score);
@@ -641,17 +595,16 @@ void screen::printScores()
     scoreText.setString(numToStr);
 
     window.draw(scoreText);
-<<<<<<< HEAD
 
     numToStr = to_string(high_score);
-=======
+
     numToStr = to_string(score);
->>>>>>> c903a1f69f188a7a2f6f77d4f4f15ff3c7524c1b
 
     highScoreText.setString(numToStr);
 
     window.draw(highScoreText);
-    throw scoreShows{};
+    //throw scoreShows{};
+    return true;
 }
 
 bool screen::printMaze()
