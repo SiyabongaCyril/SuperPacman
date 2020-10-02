@@ -16,7 +16,10 @@ class screen
         void run();
         vector<sf::CircleShape> SuperBalls;
         vector<sf::Sprite> Keys;
+        vector<sf::Sprite> storeKeys;
         vector<sf::Sprite> Fruits;
+         vector<sf::Sprite> storeFruits;
+        vector<sf::RectangleShape> ManageDoors;
 
         bool printMaze();
 
@@ -53,10 +56,16 @@ class screen
         string numToStr;
         int high_score = 0;
         int  score = 0;
+        int randomDoor;
         int create_pacman = 0;
+        int create_keys = 0;
+        int create_fruits = 0;
+        int create_doors = 0;
+        int track_doors = 1;
 
         //variables for controlling pacma
         bool moving = false;
+        bool stop = false;
         bool trackRight = false;
         bool trackLeft = false;
         bool trackUp = false;

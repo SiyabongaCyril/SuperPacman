@@ -129,6 +129,7 @@ Maze::Maze():maze(),Doors()
                     || i==283 && j==105  || i==283 && j==185 || i==283 && j==477 || i==283 && j==519
                     || i==200 && j==354 || i==367 && j==354 || i==200 && j==477 || i==367 && j==477)
             {
+
                 door_blocks.setScale(sf::Vector2f(0.07,0.005));
                 door_blocks.setFillColor(sf::Color::Red);
                 door_blocks.setPosition(sf::Vector2f(i,j));

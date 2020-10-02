@@ -1,8 +1,11 @@
 #include "screen.h"
 #include "ResourcesManager.h"
 #include "Maze.h"
+#include <iostream>
 
 #include <string>
+
+using namespace std;
 
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 {
@@ -73,12 +76,16 @@ void screen::processEvents()
             //Events to control pacMan
             if(event.key.code == sf::Keyboard::Right)
                 moving = true;
+            stop = false;
             if(event.key.code == sf::Keyboard::Up)
                 moving = true;
+            stop = false;
             if(event.key.code == sf::Keyboard::Down)
                 moving = true;
+            stop = false;
             if(event.key.code == sf::Keyboard::Left)
                 moving = true;
+            stop = false;
             break;
 
         case sf::Event::EventType::KeyReleased: //called when a key is released
@@ -176,122 +183,191 @@ bool screen::pacM()
     //pacman function
     ResourcesManager manager;
 
+    Maze getFunction;
+
     sf::IntRect rectPac(900,0,900,1000);
     sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
     PacMan.setTextureRect(rectPac);
-    PacMan.scale(sf::Vector2f(0.027,0.027));
+    PacMan.scale(sf::Vector2f(0.025,0.025));
 
     if(create_pacman == 0)
     {
-        PacMan.setPosition(sf::Vector2f(273,75));
-        ++create_pacman;
+        PacMan.setPosition(sf::Vector2f(273,74));
+        create_pacman = 1;
     }
     else
         PacMan.setPosition(position);
-    /*if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-    {
-        if(!isPlaying)
-        {
-            isPlaying = true;
-            clock.restart();
-            PacMan.setPosition(sf::Vector2f(80,65));
-        }
-    }*/
-
-
-    //float position=0;
-
-    /*if(isPlaying)
-    {
-        float deltaTime = clock.restart().asSeconds();
-        //scales PacMan to the desired size
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            position = position+pos*deltaTime;
-        }
-        PacMan.move(sf::Vector2f(pos*deltaTime, 0));
-
-        PacMan.setPosition(sf::Vector2f(position+pos*deltaTime,65));
-
-    }*/
-
-    if (clock.getElapsedTime().asMilliseconds() > 100.0f)
-        {
-            if(rectPac.left == 900)
-            {
-                rectPac.left = 0;
-            }
-            else
-                rectPac.left +=900;
-            PacMan.setTextureRect(rectPac);
-
-            if (pacTimer.getElapsedTime().asMilliseconds() > 150.0f)
-                pacTimer.restart();
-        }
-    //Divides the PacMan sprite into two
-    //Allocates time and switches between sections of sprite to create animation */
 
     if(moving && start)
         check = true;
 
-    if (check)
+    position = PacMan.getPosition();
+
+    for(unsigned int k=0; k<getFunction.maze.size(); k++)
     {
+        if (check && !stop)
+        {
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-        {
-            PacMan.move(sf::Vector2f(0,10));
-            trackDown = true;
-            trackRight = false;
-            trackLeft = false;
-            trackUp = false;
-        }
-        else if(trackDown)
-        {
-            PacMan.move(sf::Vector2f(0,10));
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+            {
+
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    cout<<"collision"<<endl;
+                    stop = true;
+                    PacMan.setPosition(position);
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(0,0.1));
+                    trackDown = true;
+                    trackRight = false;
+                    trackLeft = false;
+                    trackUp = false;
+                }
+
+            }
+            else if(trackDown)
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(0,0.1));
+                }
+
+            }
+
+            //Move the object
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(0.1,0));
+                    trackRight = true;
+                    trackLeft = false;
+                    trackDown = false;
+                    trackUp = false;
+                }
+
+            }
+            else if(trackRight)
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(0.1,0));
+                }
+
+            }
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(0, -0.1));
+                    trackUp = true;
+                    trackRight = false;
+                    trackLeft = false;
+                    trackDown = false;
+                }
+
+            }
+            else if(trackUp)
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(0,-0.1));
+                }
+
+            }
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(-0.1,0));
+                    trackLeft = true;
+                    trackRight = false;
+                    trackDown = false;
+                    trackUp = false;
+                }
+
+            }
+            else if(trackLeft)
+            {
+                if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
+                {
+                    stop = true;
+                    PacMan.setPosition(position);
+                    cout<<"collision"<<endl;
+                }
+                else
+                {
+                    PacMan.move(sf::Vector2f(-0.1,0));
+                }
+
+            }
         }
 
-        //Move the object
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-        {
-            PacMan.move(sf::Vector2f(10,0));
-            trackRight = true;
-            trackLeft = false;
-            trackDown = false;
-            trackUp = false;
-        }
-        else if(trackRight)
-        {
-            PacMan.move(sf::Vector2f(10,0));
-        }
+        position = PacMan.getPosition();
+    }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+    for(unsigned int k=0; k<Keys.size(); k++)
+    {
+        if(PacMan.getGlobalBounds().intersects(Keys[k].getGlobalBounds()))
         {
-            PacMan.move(sf::Vector2f(0, -10));
-            trackUp = true;
-            trackRight = false;
-            trackLeft = false;
-            trackDown = false;
-        }
-        else if(trackUp)
-        {
-            PacMan.move(sf::Vector2f(0,-10));
-        }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-        {
-            PacMan.move(sf::Vector2f(-10,0));
-            trackLeft = true;
-            trackRight = false;
-            trackDown = false;
-            trackUp = false;
-        }
-        else if(trackLeft)
-        {
-            PacMan.move(sf::Vector2f(-10,0));
+            Keys.erase( Keys.begin() + k);
+
+            ManageDoors.erase( ManageDoors.begin() + track_doors) ;
+            track_doors +1;
+
         }
     }
 
-    position = PacMan.getPosition();
+    for(unsigned int k=0; k<storeFruits.size(); k++)
+    {
+        if(PacMan.getGlobalBounds().intersects(storeFruits[k].getGlobalBounds()))
+        {
+
+            storeFruits.erase( storeFruits.begin() + k);
+            ++score;
+        }
+    }
 
     window.draw(PacMan);
 }
@@ -345,12 +421,17 @@ void screen::createKeys()
                     || i == 215 && j ==  325 || i == 380 && j ==  325 || i == 300 && j == 405)
             {
 
-                key.scale(sf::Vector2f(0.128,0.128));
-                key.setPosition(sf::Vector2f(i,j));
-                Keys.push_back(key);
+                if(create_keys == 0)
+                {
+                    key.scale(sf::Vector2f(0.128,0.128));
+                    key.setPosition(sf::Vector2f(i,j));
+                    Keys.push_back(key);
+                }
             }
         }
     }
+
+    create_keys = 1;
 
     for(int k = 0; k<Keys.size(); k++)
     {
@@ -363,6 +444,7 @@ void screen::createFruits()
     ResourcesManager manager;
 
     //Load Sprite for fruits, initialise fruits, store them in a vector and display them on the game-mode window
+
     for( unsigned int i = 0; i<600; i++)
     {
         for(unsigned int j = 0; j<600; j++)
@@ -382,29 +464,48 @@ void screen::createFruits()
                     i == 250 && j == 360 || i == 340 && j == 360)
             {
 
-                pear.scale(sf::Vector2f(0.12,0.12));
-                pear.setPosition(sf::Vector2f(i,j));
-                Fruits.push_back(pear);
+                if(create_fruits == 0)
+                {
+                    pear.scale(sf::Vector2f(0.12,0.12));
+                    pear.setPosition(sf::Vector2f(i,j));
+                    Fruits.push_back(pear);
+                    storeFruits.push_back(pear);
+
+                }
+
             }
         }
     }
 
-    for(int k = 0; k<Fruits.size(); k++)
+    if(check!=0)
     {
-        window.draw(Fruits[k]);
+        for(int k = 0; k<storeFruits.size(); k++)
+        {
+            window.draw(storeFruits[k]);
+        }
     }
+    else
+    {
+         for(int k = 0; k<storeFruits.size(); k++)
+        {
+            window.draw(storeFruits[k]);
+        }
+    }
+
+    create_fruits = 1;
+
 }
 
 void screen::printScores()
 {
     //Convert new scores to strings, load them into the sf text variables and display them on the game-mode window
-    numToStr = to_string(high_score);
+    numToStr = to_string(score);
 
     scoreText.setString(numToStr);
 
     window.draw(scoreText);
 
-    numToStr = to_string(score);
+    numToStr = to_string(high_score);
 
     highScoreText.setString(numToStr);
 
@@ -415,10 +516,24 @@ bool screen::printMaze()
 {
     Maze getFunction;
 
-    for(int k = 0; k<getFunction.Doors.size(); k++)
+    if(create_doors == 0)
     {
-        window.draw(getFunction.Doors[k]);
+        for(int k = 0; k<getFunction.Doors.size(); k++)
+        {
+            window.draw(getFunction.Doors[k]);
+            ManageDoors.push_back(getFunction.Doors[k]);
+        }
+
+        create_doors = 1;
     }
+    else
+    {
+        for(int k = 0; k<ManageDoors.size(); k++)
+        {
+            window.draw(ManageDoors[k]);
+        }
+    }
+
     for(int j = 0; j<getFunction.maze.size(); j++)
     {
         window.draw(getFunction.maze[j]);
@@ -451,3 +566,19 @@ bool screen::scoreTexts()
 
     return true;
 }
+
+/*if (clock.getElapsedTime().asMilliseconds() > 100.0f)
+        {
+            if(rectPac.left == 900)
+            {
+                rectPac.left = 0;
+            }
+            else
+                rectPac.left +=900;
+            PacMan.setTextureRect(rectPac);
+
+            if (pacTimer.getElapsedTime().asMilliseconds() > 150.0f)
+                pacTimer.restart();
+        }*/
+//Divides the PacMan sprite into two
+//Allocates time and switches between sections of sprite to create animation */
