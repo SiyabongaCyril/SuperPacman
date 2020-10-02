@@ -136,6 +136,7 @@ Maze::Maze():maze(),Doors()
             }
         }
     }
+   // throw MazeLoaded{};
 }
 
 bool Maze::setText()

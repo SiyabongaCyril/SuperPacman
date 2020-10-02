@@ -6,17 +6,18 @@
 #include <vector>
 
 using namespace std;
+class MazeLoaded{};
 class Maze
 {
     public:
         Maze();
         void MazeDoors();
+         bool setText();
         vector<sf::RectangleShape> maze;
         vector<sf::RectangleShape> Doors;
         sf::Font textFont;
         sf::Text text;
     private:
-        bool setText();
 
 };
 

@@ -96,9 +96,10 @@ void screen::processEvents()
             break;
         }
     }
+    throw EventDeclared{};
 }
 
-void screen::render()
+bool screen::render()
 {
     ResourcesManager manager;
 
@@ -152,6 +153,7 @@ void screen::render()
         window.draw(SplashScreenPacMan);
     }
     window.display();
+    return true;
 }
 
 bool screen::splashScreen()
@@ -281,6 +283,7 @@ bool screen::pacM()
     position = PacMan.getPosition();
 
     window.draw(PacMan);
+    return true;
 }
 
 void screen::Ghosts()
@@ -331,10 +334,22 @@ void screen::Ghosts()
 
             if(moveGhost)
             {
-                if(trackLeft){red.move(sf::Vector2f(0,-0.1));}
-                else if(trackUp){red.move(sf::Vector2f(0,0.1));}
-                else if(trackDown){red.move(sf::Vector2f(-0.1,0));}
-                else if(trackRight){red.move(sf::Vector2f(0.1,0));}
+                if(trackLeft)
+                {
+                    red.move(sf::Vector2f(0,-0.1));
+                }
+                else if(trackUp)
+                {
+                    red.move(sf::Vector2f(0,0.1));
+                }
+                else if(trackDown)
+                {
+                    red.move(sf::Vector2f(-0.1,0));
+                }
+                else if(trackRight)
+                {
+                    red.move(sf::Vector2f(0.1,0));
+                }
 
                 // blue.move(sf::Vector2f(10,0));
                 // orange.move(sf::Vector2f(0,10));
@@ -346,12 +361,24 @@ void screen::Ghosts()
                 collision =true;
             }
 
-             if(collision)
+            if(collision)
             {
-                if(trackLeft){red.move(sf::Vector2f(0,0.1));}
-                else if(trackUp){red.move(sf::Vector2f(0,-0.1));}
-                else if(trackDown){red.move(sf::Vector2f(0.1,0));}
-                else if(trackRight){red.move(sf::Vector2f(-0.1,0));}
+                if(trackLeft)
+                {
+                    red.move(sf::Vector2f(0,0.1));
+                }
+                else if(trackUp)
+                {
+                    red.move(sf::Vector2f(0,-0.1));
+                }
+                else if(trackDown)
+                {
+                    red.move(sf::Vector2f(0.1,0));
+                }
+                else if(trackRight)
+                {
+                    red.move(sf::Vector2f(-0.1,0));
+                }
                 collision =false;
                 //moveGhost =true;
             }
@@ -366,6 +393,7 @@ void screen::Ghosts()
     window.draw(pink);
     window.draw(orange);
     window.draw(blue);
+    throw GhostsDrawn{};
 }
 
 void screen::createKeys()
@@ -399,6 +427,7 @@ void screen::createKeys()
     {
         window.draw(Keys[k]);
     }
+    throw KeysLoaded{};
 }
 
 void screen::createFruits()
@@ -436,6 +465,7 @@ void screen::createFruits()
     {
         window.draw(Fruits[k]);
     }
+    throw fruitsLoaded{};
 }
 
 void screen::printScores()
@@ -446,12 +476,12 @@ void screen::printScores()
     scoreText.setString(numToStr);
 
     window.draw(scoreText);
-
     numToStr = to_string(score);
 
     highScoreText.setString(numToStr);
 
     window.draw(highScoreText);
+    throw scoreShows{};
 }
 
 bool screen::printMaze()
@@ -476,7 +506,7 @@ bool screen::printMaze()
     return true;
 }
 
-bool screen::scoreTexts()
+int screen::scoreTexts()
 {
     //Load font and set text for the scores
     if(!scoreFont.loadFromFile("resources/OstrichSans-Bold.otf"))
@@ -492,5 +522,5 @@ bool screen::scoreTexts()
     highScoreText.setPosition(273,25);
     highScoreText.setFillColor(sf::Color::White);
 
-    return true;
+    return 0;
 }
