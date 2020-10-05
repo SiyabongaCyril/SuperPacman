@@ -53,9 +53,10 @@ class screen
 
         bool start = false; //Variable to check if the game is still in the splash screen/game mode
         bool isPlaying = false;
-        bool moveGhost = true;
-        bool collision = false;
-
+        bool moveRedGhost = true;
+        bool moveBlueGhost = true;
+        bool movePinkGhost = true;
+        bool moveOrangeGhost = true;
 
         sf::Clock clock;
         sf::Clock pacTimer;
