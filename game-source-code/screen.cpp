@@ -217,8 +217,9 @@ bool screen::pacM()
                 if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
                 {
                     cout<<"collision"<<endl;
-                    stop = true;
                     PacMan.setPosition(position);
+                    stop = true;
+                    //PacMan.setPosition(position);
                 }
                 else
                 {
@@ -289,7 +290,7 @@ bool screen::pacM()
                 }
                 else
                 {
-                    PacMan.move(sf::Vector2f(0, -0.1));
+                    PacMan.move(sf::Vector2f(0,-0.1));
                     trackUp = true;
                     trackRight = false;
                     trackLeft = false;
@@ -345,9 +346,9 @@ bool screen::pacM()
 
             }
         }
-
-        position = PacMan.getPosition();
     }
+
+    position = PacMan.getPosition();
 
     for(unsigned int k=0; k<Keys.size(); k++)
     {

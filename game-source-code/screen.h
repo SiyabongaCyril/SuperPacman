@@ -66,8 +66,8 @@ class screen
         int high_score = 0;
         int  score = 0;
         int randomDoor;
-        int create_pacman = 0;
 
+        int create_pacman = 0;
         int create_keys = 0;
         int create_fruits = 0;
         int create_doors = 0;
