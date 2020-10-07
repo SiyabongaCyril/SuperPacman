@@ -55,7 +55,6 @@ TEST_CASE ("The score text is displayed")
 }
 
 
-
 TEST_CASE ("Fruits are loaded")
 {
     screen fruits;
