@@ -12,6 +12,7 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
 
     //Declare splash screen icons
     splashScreen();
+    endGameScreen();
 
     //set text for the scores
     scoreTexts();
@@ -119,7 +120,7 @@ bool screen::render()
     sf::Sprite SplashScreenPacMan(ResourcesManager::GetTexture("resources/pacman.png"));
 
     //declaring pack man icon to display on the splashscreen
-    if(!start)
+    if(!start && !endGame)
     {
         //scales PacMan to the desired size
         SplashScreenPacMan.setTextureRect(rectPac);
@@ -140,6 +141,10 @@ bool screen::render()
             if (clock.getElapsedTime().asMilliseconds() > 200.0f)
                 clock.restart();
         }
+
+        //splashscreen draw variables on window if in splashhscreen mode
+        window.draw(startUpMessage);
+        window.draw(SplashScreenPacMan);
     }
 
     //Start the game mode if the player enters the game mode
@@ -155,13 +160,27 @@ bool screen::render()
 
         printScores();
     }
-    else
+
+    if (endGame)
     {
-        //splashscreen draw variables on window if in splashhscreen mode
-        window.draw(startUpMessage);
-        window.draw(SplashScreenPacMan);
+        window.clear(sf::Color::Black);
+window.draw(endMessage);
     }
     window.display();
+    return true;
+}
+//Game Ended
+bool screen::endGameScreen()
+{
+    if(!font.loadFromFile("resources/OstrichSans-Medium.otf"))
+        return EXIT_FAILURE;
+
+    endMessage.setFont(font);
+   endMessage.setCharacterSize(50);
+    endMessage.setPosition(250.f, 250.f);
+    endMessage.setFillColor(sf::Color::White);
+    endMessage.setString("GAME OVER");
+
     return true;
 }
 
@@ -381,11 +400,13 @@ bool screen::pacM()
         }
     }
 
+
     for(unsigned int k=0; k<storeGhosts.size(); k++)
     {
         if(PacMan.getGlobalBounds().intersects(storeGhosts[k].getGlobalBounds()))
         {
-            PacCaught = true;
+            endGame = true;
+            start =false;
         }
     }
 
@@ -400,7 +421,7 @@ bool screen::Ghosts()
     //store ghosts
     //Load ghosts and display them in the game-mode window in the maize (at the middle of the maize)
 
-    if(PacCaught == false)
+    if(endGame == false)
     {
         storeGhosts.clear();
 
@@ -637,19 +658,24 @@ bool screen::Ghosts()
         window.draw(pink);
         window.draw(orange);
         window.draw(blue);
+
         moveRedGhost=true;
         moveBlueGhost=true;
         movePinkGhost=true;
         moveOrangeGhost=true;
-        return true;
 
         storeGhosts.push_back(red);
         storeGhosts.push_back(pink);
         storeGhosts.push_back(orange);
         storeGhosts.push_back(blue);
+        return true;
     }
+    drunkGhosts();
+}
 
-    if(PacCaught == true)
+bool screen::drunkGhosts()
+{
+        if(PacCaught == true)
     {
         storeGhosts.clear();
 
@@ -657,16 +683,16 @@ bool screen::Ghosts()
         Maze getFunction;
 
         sf::Sprite red(ResourcesManager::GetTexture("resources/transBlue.png"));
-        red.scale(sf::Vector2f(0.05,0.05));
+        red.scale(sf::Vector2f(0.09,0.09));
 
         sf::Sprite pink(ResourcesManager::GetTexture("resources/transBlue.png"));
-        pink.scale(sf::Vector2f(0.05,0.05));
+        pink.scale(sf::Vector2f(0.09,0.09));
 
         sf::Sprite orange(ResourcesManager::GetTexture("resources/transBlue.png"));
-        orange.scale(sf::Vector2f(0.05,0.05));
+        orange.scale(sf::Vector2f(0.09,0.09));
 
         sf::Sprite blue(ResourcesManager::GetTexture("resources/transBlue.png"));
-        blue.scale(sf::Vector2f(0.05,0.05));
+        blue.scale(sf::Vector2f(0.09,0.09));
 //Ghost Movement
         if(create_ghosts == 0)
         {
@@ -890,15 +916,14 @@ bool screen::Ghosts()
         moveBlueGhost=true;
         movePinkGhost=true;
         moveOrangeGhost=true;
-        return true;
 
         storeGhosts.push_back(red);
         storeGhosts.push_back(pink);
         storeGhosts.push_back(orange);
         storeGhosts.push_back(blue);
+        return true;
     }
 }
-
 bool screen::createKeys()
 {
     ResourcesManager manager;

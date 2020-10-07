@@ -8,11 +8,7 @@
 #include "Maze.h"
 
 using namespace std;
-class scoreShows {};
-class fruitsLoaded {};
-class EventDeclared {};
-class GhostsDrawn {};
-class KeysLoaded {};
+
 class screen
 {
 public:
@@ -36,11 +32,14 @@ public:
     bool pacM();
     bool Ghosts();
     bool createKeys();
+    bool drunkGhosts();
+    bool endGameScreen();
 
 private :
     sf::Font font; //store font for texts on window
     sf::Font scoreFont;
     sf::Text startUpMessage; //store texts to be drawn on window
+    sf::Text endMessage;
     sf::Text scoreText;
     sf::Text highScoreText;
     sf::RenderWindow window;
@@ -53,6 +52,7 @@ private :
 private:
 
     bool start = false; //Variable to check if the game is still in the splash screen/game mode
+    bool  endGame = false;
     bool isPlaying = false;
     bool moveRedGhost = true;
     bool moveBlueGhost = true;
