@@ -8,11 +8,7 @@
 #include "Maze.h"
 
 using namespace std;
-class scoreShows{};
-class fruitsLoaded{};
-class EventDeclared{};
-class GhostsDrawn{};
-class KeysLoaded{};
+class palletsAdded{};
 class screen
 {
     public:

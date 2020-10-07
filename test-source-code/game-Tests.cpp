@@ -19,7 +19,14 @@ TEST_CASE("Check if there are 6 pallets on the maze")
     CHECK(ball.SuperBalls.size()== 6);
 
 }
+
+TEST_CASE("Event created")
+{
+    screen event;
+    CHECK()
+}
 //New Test Cases
+//Test Case Recommit
 TEST_CASE("Check if the window is created")
 {
     screen Window;
@@ -39,16 +46,16 @@ TEST_CASE ("Maze has been printed")
     CHECK(maze.printMaze());
 }
 
-/*TEST_CASE ("The score text is displayed")
+TEST_CASE ("The score text is displayed")
 {
     screen score;
     CHECK(score.scoreTexts()==0);
     CHECK(score.printScores());
 
-}*/
+}
 
 
-/*
+
 TEST_CASE ("Fruits are loaded")
 {
     screen fruits;
@@ -84,4 +91,4 @@ TEST_CASE("Keys have been loaded to the maze")
 {
     screen keys;
     CHECK(keys.createKeys());
-}*/
+}
