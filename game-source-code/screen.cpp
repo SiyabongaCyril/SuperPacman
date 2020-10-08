@@ -1,12 +1,11 @@
 #include "screen.h"
 #include "ResourcesManager.h"
 #include "Maze.h"
-#include <iostream>
-
 #include <string>
 
 using namespace std;
 
+//Initialisation done in the constructor
 screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls(),Balls()
 {
 
@@ -48,7 +47,8 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls(),Ball
     }
 
 }
-//Window Setup
+
+//Function where the entire game takes place
 bool screen::run()
 {
     clock.restart();
@@ -61,6 +61,7 @@ bool screen::run()
     return true;
 }
 
+//Event handling function for Window and Keyboard events
 bool screen::processEvents()
 {
     sf::Event event;
@@ -107,10 +108,10 @@ bool screen::processEvents()
             break;
         }
     }
-    //throw EventDeclared{};
     return true;
 }
 
+//Rendering shapes, sprites and their transformation on the window
 bool screen::render()
 {
     ResourcesManager manager;
@@ -168,16 +169,23 @@ bool screen::render()
         {
              pacM();
         }
+
+        //create and draw fruits on the game window
         createFruits();
+
+        //create and draw the keys on the game window
         createKeys();
 
+        //If Pac-Man has not eaten any pellet, draw the normal ghosts on the window
+        //If Pac-Man has eaten the pellets, draw the transparent blue ghosts on the window
+        //Set the time period for the transparent blue ghosts to be activated
         if( pellets_collision == 0)
             Ghosts();
         else
         {
             drunkGhosts();
 
-            if (clock.getElapsedTime().asSeconds() > 30)
+            if (clock.getElapsedTime().asSeconds() > 25)
             {
                 pellets_collision = 0;
                 eatenGhosts.clear();
@@ -187,15 +195,18 @@ bool screen::render()
         printScores();
     }
 
+    //Display a splashcreen for the end game
     if (endGame)
     {
         window.clear(sf::Color::Black);
         window.draw(endMessage);
     }
+
+    //Display the window
     window.display();
     return true;
 }
-//Game Ended
+
 bool screen::endGameScreen()
 {
     if(!font.loadFromFile("resources/OstrichSans-Medium.otf"))
@@ -227,10 +238,9 @@ bool screen::splashScreen()
     return true;
 }
 
-//Enlarged pacman
 bool screen::pacM()
 {
-    //pacman function
+    //Create Pac-Man Sprite
     ResourcesManager manager;
 
     Maze getFunction;
@@ -240,6 +250,8 @@ bool screen::pacM()
     PacMan.setTextureRect(rectPac);
     PacMan.scale(sf::Vector2f(0.025,0.025));
 
+    //If Pac-Man Sprite is at the beginning of the game-mode, set position to top middle
+    //If Pac-Man has been moved, set position to the last obtained position of Pac-Man
     if(create_pacman == 0)
     {
         PacMan.setPosition(sf::Vector2f(273,74));
@@ -248,10 +260,11 @@ bool screen::pacM()
     else
         PacMan.setPosition(position);
 
+    //Check if the game has started and if any arrow keys have been pressed to move Pac-Man
+    //Move Pac-Man in the direction of the pressed keys
+    //Check collisions with the maize walls while moving Pac-Man
     if(moving && start)
         check = true;
-
-    //position = PacMan.getPosition();
 
     for(unsigned int k=0; k<getFunction.maze.size(); k++)
     {
@@ -263,7 +276,6 @@ bool screen::pacM()
 
                 if(PacMan.getGlobalBounds().intersects(getFunction.maze[k].getGlobalBounds()))
                 {
-                    cout<<"collision"<<endl;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(0,-0.1));
                     stop = true;
@@ -286,7 +298,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(0,-0.1));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -303,7 +314,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(-0.1,0));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -322,7 +332,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(-0.1,0));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -338,7 +347,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(0,0.1));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -357,7 +365,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(0,0.1));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -373,7 +380,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(0.1,0));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -392,7 +398,6 @@ bool screen::pacM()
                     stop = true;
                     PacMan.setPosition(position);
                     PacMan.move(sf::Vector2f(0.1,0));
-                    cout<<"collision"<<endl;
                 }
                 else
                 {
@@ -405,6 +410,8 @@ bool screen::pacM()
 
     position = PacMan.getPosition();
 
+    //After Pac-Man Movement, check if PacMan has eaten a key
+    //If Pac-Man has eaten a key, remove the key from the window
     for(unsigned int k=0; k<Keys.size(); k++)
     {
         if(PacMan.getGlobalBounds().intersects(Keys[k].getGlobalBounds()))
@@ -418,6 +425,8 @@ bool screen::pacM()
         }
     }
 
+    //After Pac-Man Movement, check if PacMan has eaten a fruit
+    //If Pac-Man has eaten a key, remove the fruit from the window
     for(unsigned int k=0; k<Fruits.size(); k++)
     {
         if(PacMan.getGlobalBounds().intersects(storeFruits[k].getGlobalBounds()))
@@ -427,6 +436,9 @@ bool screen::pacM()
         }
     }
 
+    //After Pac-Man Movement, check if PacMan has collided with the normal ghosts OR the transparent ghosts
+    //If Pac-Man has collided with a normal ghosts, end the game by displaying the end-game splash-screen
+    //If Pac-Man has collided with a transparent ghosts, remove the transparent ghost from the screen and add a 10 to the score
     for(unsigned int k=0; k<storeGhosts.size(); k++)
     {
         if(pellets_collision == 0)
@@ -461,6 +473,8 @@ bool screen::pacM()
         }
     }
 
+    //After Pac-Man Movement, check if PacMan has collided with the normal pellets
+    //If Pac-Man has collided with a normal pellet, change the ghosts to transparent blue ghosts
     for(int k = 0; k<Balls.size(); k++)
     {
         if(PacMan.getGlobalBounds().intersects(Balls[k].getGlobalBounds()))
@@ -471,6 +485,8 @@ bool screen::pacM()
         }
     }
 
+    //After Pac-Man Movement, check if PacMan has collided with the super pellets
+    //If Pac-Man has collided with a super pellet, enlarge Pac-Man
     for(int i = 0; i<SuperBalls.size(); i++)
     {
         if(PacMan.getGlobalBounds().intersects(SuperBalls[0].getGlobalBounds()))
@@ -486,15 +502,16 @@ bool screen::pacM()
 
     }
 
+    //Draw Pac-Man on the window
     window.draw(PacMan);
-
 
     return true;
 }
 
 bool screen::EnlargedPac()
 {
-        ResourcesManager manager;
+    //Load Enlarged PacMan  Sprite
+    ResourcesManager manager;
 
     Maze getFunction;
 
@@ -716,7 +733,7 @@ bool screen::Ghosts()
                     if(red.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
                     {
                         moveRedGhost =false;
-                        //Because there's a collion, set the red ghost to its previous position
+                        //Because there's a collision, set the red ghost to its previous position
                         red.setPosition(RedPos);
                     }
                     else
@@ -946,23 +963,14 @@ bool screen::drunkGhosts()
 
     sf::Sprite blue(ResourcesManager::GetTexture("resources/transBlue.png"));
     blue.scale(sf::Vector2f(0.09,0.09));
-//Ghost Movement
-    if(create_ghosts == 0)
-    {
-        red.setPosition(sf::Vector2f(255,200));
-        pink.setPosition(sf::Vector2f(329,200));
-        orange.setPosition(sf::Vector2f(255,234));
-        blue.setPosition(sf::Vector2f(329,234));
-        ++create_ghosts;
-    }
-    else
-    {
+
         red.setPosition(RedPos);
         blue.setPosition(BluePos);
         pink.setPosition(PinkPos);
         orange.setPosition(OrangePos);
-    }
-//Ghost Collisions
+
+
+   //Transparent blue ghost collisions and movements
     if(start)
     {
         for (unsigned i = 0; i<getFunction.maze.size(); i++)
@@ -1163,9 +1171,9 @@ bool screen::drunkGhosts()
 
     int  eatenGhostsNum = eatenGhosts.size();
 
+    //Draw only the transparent blue ghosts that have not been eaten by Pac-Man
     if(eatenGhostsNum == 0)
     {
-        cout << "None" << endl;
         window.draw(red);
         window.draw(pink);
         window.draw(orange);
@@ -1174,7 +1182,6 @@ bool screen::drunkGhosts()
 
     else if(eatenGhostsNum == 1)
     {
-        cout << "One" << endl;
         if( (eatenGhosts[0] != 0) )
         {
             window.draw(red);
@@ -1195,7 +1202,6 @@ bool screen::drunkGhosts()
 
     else  if(eatenGhostsNum == 2)
     {
-        cout << "Two" << endl;
         if( (eatenGhosts[0] != 1) && (eatenGhosts[1] != 0) )
         {
             window.draw(red);
@@ -1217,7 +1223,6 @@ bool screen::drunkGhosts()
 
     else if(eatenGhostsNum == 3)
     {
-        cout << "Three" << endl;
         if( (eatenGhosts[0] != 1) && (eatenGhosts[1] != 1) && (eatenGhosts[2] !=0) )
         {
             window.draw(red);
@@ -1239,7 +1244,6 @@ bool screen::drunkGhosts()
 
     else if(eatenGhostsNum == 4)
     {
-        cout << "Four" << endl;
         if( (eatenGhosts[0] != 1) && (eatenGhosts[1] != 1) && (eatenGhosts[2] !=1) && (eatenGhosts[3] != 0) )
         {
             window.draw(red);
@@ -1263,6 +1267,7 @@ bool screen::drunkGhosts()
     movePinkGhost=true;
     moveOrangeGhost=true;
 
+    //store the ghosts to be used to track Pac-Man collision
     storeGhosts.push_back(red);
     storeGhosts.push_back(pink);
     storeGhosts.push_back(orange);
@@ -1276,6 +1281,7 @@ bool screen::createKeys()
     ResourcesManager manager;
 
     //load sprite for keys, display it on the maize in the game-mode window
+    //If the keys have collided with Pac-Man, do not draw them on the window
     sf::Sprite key(ResourcesManager::GetTexture("resources/key.png"));
 
     for( unsigned int i = 0; i<600; i++)
@@ -1307,7 +1313,7 @@ bool screen::createKeys()
     {
         window.draw(Keys[k]);
     }
-    //throw KeysLoaded{};
+
     return true;
 }
 
@@ -1316,7 +1322,7 @@ bool screen::createFruits()
     ResourcesManager manager;
 
     //Load Sprite for fruits, initialise fruits, store them in a vector and display them on the game-mode window
-
+    //If the friuits have collided with Pac-Man on the screen, do not draw them during the next iteration
     for( unsigned int i = 0; i<600; i++)
     {
         for(unsigned int j = 0; j<600; j++)
@@ -1365,7 +1371,6 @@ bool screen::createFruits()
 
     create_fruits = 1;
 
-    //throw fruitsLoaded{};
     return true;
 }
 
@@ -1385,7 +1390,6 @@ bool screen::printScores()
     highScoreText.setString(numToStr);
 
     window.draw(highScoreText);
-    //throw scoreShows{};
     return true;
 }
 
@@ -1393,11 +1397,15 @@ bool screen::printMaze()
 {
     Maze getFunction;
 
+    //Create the doors for the beginning of the game-mode
+    //Else display the doors according to the doors that have not yet been removed from the screen
     if(create_doors == 0)
     {
         for(int k = 0; k<getFunction.Doors.size(); k++)
         {
             window.draw(getFunction.Doors[k]);
+
+            //Store doors to track Pac-Man collisions with the keys and remove them from the window
             ManageDoors.push_back(getFunction.Doors[k]);
         }
 
@@ -1411,10 +1419,14 @@ bool screen::printMaze()
         }
     }
 
+    //Draw Maze and Maze doors on the window
+    //Draw the super pellets on the window
+    //Draw the pellets on the window
     for(int j = 0; j<getFunction.maze.size(); j++)
     {
         window.draw(getFunction.maze[j]);
     }
+
     for(int i = 0; i<SuperBalls.size(); i++)
     {
         window.draw(SuperBalls[i]);
@@ -1448,19 +1460,3 @@ int screen::scoreTexts()
 
     return 0;
 }
-
-/*if (clock.getElapsedTime().asMilliseconds() > 100.0f)
-        {
-            if(rectPac.left == 900)
-            {
-                rectPac.left = 0;
-            }
-            else
-                rectPac.left +=900;
-            PacMan.setTextureRect(rectPac);
-
-            if (pacTimer.getElapsedTime().asMilliseconds() > 150.0f)
-                pacTimer.restart();
-        }*/
-//Divides the PacMan sprite into two
-//Allocates time and switches between sections of sprite to create animation */

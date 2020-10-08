@@ -2,10 +2,7 @@
 #define SCREEN_H
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <vector>
-#include <cstdlib>
-#include "Maze.h"
 
 using namespace std;
 
@@ -39,9 +36,9 @@ public:
     bool EnlargedPac();
 
 private :
-    sf::Font font; //store font for texts on window
+    sf::Font font;
     sf::Font scoreFont;
-    sf::Text startUpMessage; //store texts to be drawn on window
+    sf::Text startUpMessage;
     sf::Text endMessage;
     sf::Text scoreText;
     sf::Text highScoreText;
@@ -54,13 +51,17 @@ private :
 
 private:
 
-    bool start = false; //Variable to check if the game is still in the splash screen/game mode
+    //Variable to check game state:  Start Splashscreen/Gaming-Mode/End-Splashscreen
+    bool start = false;
     bool  endGame = false;
     bool isPlaying = false;
+
+    //Variables that control ghost movements
     bool moveRedGhost = true;
     bool moveBlueGhost = true;
     bool movePinkGhost = true;
     bool moveOrangeGhost = true;
+
     bool normalPacMan = true;
 
     sf::Clock clock;
@@ -72,6 +73,7 @@ private:
     int  score = 0;
     int randomDoor;
 
+    //Variables for storing and keeping tranck of changes to keys,fruits,doors,ghosts,pellets,super-pellets,maze and Pac-man
     int create_pacman = 0;
     int create_keys = 0;
     int create_fruits = 0;
@@ -82,7 +84,7 @@ private:
     int create_ghosts = 0;
     int checkCollision = false;
 
-    //variables for controlling pacma
+    //variables for controlling Pac-Man movements and changes
     bool moving = false;
     bool stop = false;
     bool trackRight = false;
@@ -95,4 +97,3 @@ private:
 
 #endif // SCREEN_H
 
-//Adding comment to make changes to allow pull request

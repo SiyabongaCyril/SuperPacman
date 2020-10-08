@@ -2,7 +2,6 @@
 #define MAZE_H
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <vector>
 
 using namespace std;
