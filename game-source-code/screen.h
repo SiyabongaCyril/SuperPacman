@@ -36,6 +36,7 @@ public:
     bool createKeys();
     bool drunkGhosts();
     bool endGameScreen();
+    bool EnlargedPac();
 
 private :
     sf::Font font; //store font for texts on window
@@ -60,6 +61,7 @@ private:
     bool moveBlueGhost = true;
     bool movePinkGhost = true;
     bool moveOrangeGhost = true;
+    bool normalPacMan = true;
 
     sf::Clock clock;
     sf::Clock pacTimer;

@@ -12,6 +12,7 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls(),Ball
 
     //Declare splash screen icons
     splashScreen();
+    //If the normal coloured ghosts collide with pacman, the game is over
     endGameScreen();
 
     //set text for the scores
@@ -154,7 +155,19 @@ bool screen::render()
 
         window.clear(sf::Color::Black);
         printMaze();
-        pacM();
+        //If a super pallet is eaten by the normal pac-man the pac-man changes from being small to big
+        //Pac-man also becomes faster
+        if(!normalPacMan)
+        {
+            EnlargedPac();
+            //It is only after 10 seconds that the normal pac-man is brought back to the maze
+            if (clock.getElapsedTime().asSeconds() > 10)
+            normalPacMan = true;
+        }
+        else
+        {
+             pacM();
+        }
         createFruits();
         createKeys();
 
@@ -192,6 +205,7 @@ bool screen::endGameScreen()
     endMessage.setCharacterSize(50);
     endMessage.setPosition(250.f, 250.f);
     endMessage.setFillColor(sf::Color::White);
+    //The message GAME OVER appears on the screen when the a normal coloured ghost collides with pac-man
     endMessage.setString("GAME OVER");
 
     return true;
@@ -213,6 +227,7 @@ bool screen::splashScreen()
     return true;
 }
 
+//Enlarged pacman
 bool screen::pacM()
 {
     //pacman function
@@ -456,8 +471,195 @@ bool screen::pacM()
         }
     }
 
+    for(int i = 0; i<SuperBalls.size(); i++)
+    {
+        if(PacMan.getGlobalBounds().intersects(SuperBalls[0].getGlobalBounds()))
+        {
+            SuperBalls.erase(SuperBalls.begin() +i);
+            clock.restart();
+            PacMan.setPosition(position);
+            if(clock.getElapsedTime().asSeconds()<=5)
+            {
+                normalPacMan = false;
+            }
+        }
+
+    }
+
     window.draw(PacMan);
 
+
+    return true;
+}
+
+bool screen::EnlargedPac()
+{
+        ResourcesManager manager;
+
+    Maze getFunction;
+
+    sf::IntRect rectPac(900,0,900,1000);
+    sf::Sprite PacMan(ResourcesManager::GetTexture("resources/pacman.png"));
+    PacMan.setTextureRect(rectPac);
+    PacMan.scale(sf::Vector2f(0.045,0.045));
+
+    if(create_pacman == 0)
+    {
+        PacMan.setPosition(sf::Vector2f(273,74));
+        create_pacman = 1;
+    }
+    else
+        PacMan.setPosition(position);
+
+    if(moving && start)
+        check = true;
+
+    //position = PacMan.getPosition();
+
+    for(unsigned int k=0; k<getFunction.maze.size(); k++)
+    {
+        if (!normalPacMan )
+        {
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+            {
+
+
+                    PacMan.move(sf::Vector2f(0,0.2));
+                    trackDown = true;
+                    trackRight = false;
+                    trackLeft = false;
+                    trackUp = false;
+
+            }
+            else if(trackDown)
+            {
+                    PacMan.move(sf::Vector2f(0,0.2));
+            }
+
+            //Move the object
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+            {
+
+                    PacMan.move(sf::Vector2f(0.2,0));
+                    trackRight = true;
+                    trackLeft = false;
+                    trackDown = false;
+                    trackUp = false;
+
+            }
+            else if(trackRight)
+            {
+                    PacMan.move(sf::Vector2f(0.5,0));
+
+            }
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+            {
+
+                    PacMan.move(sf::Vector2f(0,-0.2));
+                    trackUp = true;
+                    trackRight = false;
+                    trackLeft = false;
+                    trackDown = false;
+
+            }
+            else if(trackUp)
+            {
+                    PacMan.move(sf::Vector2f(0,-0.2));
+            }
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+            {
+                    PacMan.move(sf::Vector2f(-0.2,0));
+                    trackLeft = true;
+                    trackRight = false;
+                    trackDown = false;
+                    trackUp = false;
+
+            }
+            else if(trackLeft)
+            {
+
+                    PacMan.move(sf::Vector2f(-0.2,0));
+            }
+        }
+    }
+
+    for(unsigned int k=0; k<Keys.size(); k++)
+    {
+        if(PacMan.getGlobalBounds().intersects(Keys[k].getGlobalBounds()))
+        {
+
+            Keys.erase( Keys.begin() + k);
+
+            ManageDoors.erase( ManageDoors.begin() + track_doors) ;
+            track_doors +1;
+
+        }
+    }
+
+    for(unsigned int k=0; k<Fruits.size(); k++)
+    {
+        if(PacMan.getGlobalBounds().intersects(storeFruits[k].getGlobalBounds()))
+        {
+            storeFruits.erase( storeFruits.begin() + k);
+            ++score;
+        }
+    }
+
+        for(int i = 0; i<SuperBalls.size(); i++)
+    {
+        if(PacMan.getGlobalBounds().intersects(SuperBalls[0].getGlobalBounds()))
+        {
+            SuperBalls.erase(SuperBalls.begin() +i);
+            clock.restart();
+            PacMan.setPosition(position);
+            if(clock.getElapsedTime().asSeconds()<=5)
+            {
+                normalPacMan = false;
+            }
+        }
+
+    }
+
+        for(unsigned int k=0; k<storeGhosts.size(); k++)
+    {
+        if(pellets_collision == 0)
+        {
+            if(PacMan.getGlobalBounds().intersects(storeGhosts[k].getGlobalBounds()))
+            {
+                endGame = true;
+                start =false;
+            }
+
+        }
+        else
+        {
+            if(PacMan.getGlobalBounds().intersects(storeGhosts[k].getGlobalBounds()))
+            {
+                int checker = 0;
+
+                for(int i = 0; i < eatenGhosts.size(); i++)
+                {
+                    if( eatenGhosts[i] == k)
+                    {
+                        ++checker;
+                    }
+                }
+
+                if(checker == 0)
+                {
+                    eatenGhosts.push_back(k);
+                    score = score + 10;
+                }
+            }
+        }
+    }
+
+
+    position = PacMan.getPosition();
+    window.draw(PacMan);
     return true;
 }
 
@@ -466,14 +668,14 @@ bool screen::Ghosts()
     //Load ghosts
     //store ghosts
     //Load ghosts and display them in the game-mode window in the maize (at the middle of the maize)
-
+//while the game has not ended, ghosts are drawn on the screen
     if(endGame == false)
     {
         storeGhosts.clear();
 
         ResourcesManager manager;
         Maze getFunction;
-
+//loading the red, pink, orange and blue ghosts respectively
         sf::Sprite red(ResourcesManager::GetTexture("resources/redGhost.png"));
         red.scale(sf::Vector2f(0.19,0.19));
 
@@ -488,6 +690,7 @@ bool screen::Ghosts()
 //Ghost Movement
         if(create_ghosts == 0)
         {
+            //set positions of the ghosts to the ghost box in the middle of maze before the game begins
             red.setPosition(sf::Vector2f(255,200));
             pink.setPosition(sf::Vector2f(329,200));
             orange.setPosition(sf::Vector2f(255,234));
@@ -496,6 +699,7 @@ bool screen::Ghosts()
         }
         else
         {
+            //while the game has already begun, set set the ghosts to their previous positions
             red.setPosition(RedPos);
             blue.setPosition(BluePos);
             pink.setPosition(PinkPos);
@@ -512,6 +716,7 @@ bool screen::Ghosts()
                     if(red.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
                     {
                         moveRedGhost =false;
+                        //Because there's a collion, set the red ghost to its previous position
                         red.setPosition(RedPos);
                     }
                     else
@@ -560,6 +765,7 @@ bool screen::Ghosts()
                     if(blue.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
                     {
                         moveBlueGhost =false;
+                        //Because there's a collion, set the blue ghost to its previous position
                         blue.setPosition(BluePos);
                     }
                     else
@@ -606,6 +812,7 @@ bool screen::Ghosts()
                     if(pink.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
                     {
                         movePinkGhost =false;
+                        //Because there's a collion, set the pink ghost to its previous position
                         pink.setPosition(PinkPos);
                     }
                     else
@@ -652,6 +859,7 @@ bool screen::Ghosts()
                     if(orange.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
                     {
                         moveOrangeGhost =false;
+                        //Because there's a collion, set the orange ghost to its previous position
                         orange.setPosition(OrangePos);
                     }
                     else
@@ -676,6 +884,7 @@ bool screen::Ghosts()
                 }
                 else if(!moveOrangeGhost)
                 {
+                    //Since there is a collision, we now move the ghosts in the opposite direction to its initial direction before collion with wall
                     if(trackLeft)
                     {
                         orange.move(sf::Vector2f(-0.1,0));
@@ -695,11 +904,12 @@ bool screen::Ghosts()
                 }
             }
         }
+        //save position of ghosts after every movement
         RedPos = red.getPosition();
         BluePos = blue.getPosition();
         PinkPos = pink.getPosition();
         OrangePos = orange.getPosition();
-
+//draw the ghost on the window
         window.draw(red);
         window.draw(pink);
         window.draw(orange);
@@ -709,7 +919,7 @@ bool screen::Ghosts()
         moveBlueGhost=true;
         movePinkGhost=true;
         moveOrangeGhost=true;
-
+//store the ghosts in a vector to be accessed for collions with pacman
         storeGhosts.push_back(red);
         storeGhosts.push_back(pink);
         storeGhosts.push_back(orange);
