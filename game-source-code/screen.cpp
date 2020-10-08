@@ -489,7 +489,7 @@ bool screen::pacM()
     //If Pac-Man has collided with a super pellet, enlarge Pac-Man
     for(int i = 0; i<SuperBalls.size(); i++)
     {
-        if(PacMan.getGlobalBounds().intersects(SuperBalls[0].getGlobalBounds()))
+        if(PacMan.getGlobalBounds().intersects(SuperBalls[i].getGlobalBounds()))
         {
             SuperBalls.erase(SuperBalls.begin() +i);
             clock.restart();
@@ -627,7 +627,8 @@ bool screen::EnlargedPac()
 
         for(int i = 0; i<SuperBalls.size(); i++)
     {
-        if(PacMan.getGlobalBounds().intersects(SuperBalls[0].getGlobalBounds()))
+        //Mistake fixed
+        if(PacMan.getGlobalBounds().intersects(SuperBalls[i].getGlobalBounds()))
         {
             SuperBalls.erase(SuperBalls.begin() +i);
             clock.restart();
