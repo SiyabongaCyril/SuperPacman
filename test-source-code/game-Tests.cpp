@@ -16,15 +16,25 @@ TEST_CASE("Check if there are 6 pallets on the maze")
 {
     screen ball;
 
-    CHECK(ball.SuperBalls.size()== 6);
+    CHECK(ball.SuperBalls.size()== 2);
+    CHECK(ball.Balls.size()==4);
 
 }
-
-TEST_CASE("Event created")
+//pallets radius
+TEST_CASE("Check the radius of pallets")
 {
-    screen event;
-    CHECK()
+    screen radius;
+    //The radius of all normal pallets on the maze is 10
+    CHECK(radius.Balls[0].getRadius()==10);
+    CHECK(radius.Balls[1].getRadius()==10);
+    CHECK(radius.Balls[2].getRadius()==10);
+    CHECK(radius.Balls[3].getRadius()==10);
+
+    //The radius of all superpallets on the maze is 12
+    CHECK(radius.SuperBalls[0].getRadius()==12);
+    CHECK(radius.SuperBalls[1].getRadius()==12);
 }
+
 //New Test Cases
 //Test Case Recommit
 TEST_CASE("Check if the window is created")
@@ -90,4 +100,10 @@ TEST_CASE("Keys have been loaded to the maze")
 {
     screen keys;
     CHECK(keys.createKeys());
+}
+
+TEST_CASE("The ghosts change after a normal pallets has been eaten by pacman")
+{
+    screen pallets;
+    CHECK(pallets.drunkGhosts());
 }
