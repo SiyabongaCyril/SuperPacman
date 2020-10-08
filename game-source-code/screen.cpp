@@ -7,7 +7,7 @@
 
 using namespace std;
 
-screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
+screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls(),Balls()
 {
 
     //Declare splash screen icons
@@ -21,6 +21,7 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
     //Loads Power Pallets
     //uses a vector to store pallets with their specific coordinates
     sf::CircleShape  superB;
+    sf::CircleShape B;
 
     for( unsigned int i = 0; i<600; i++)
     {
@@ -30,10 +31,10 @@ screen::screen():window(sf::VideoMode(630,650),"Super Pacman"),SuperBalls()
             if(i == 130 && j==115 || i ==465 && j == 115||
                     i == 130 && j==495 || i == 465 && j == 495)
             {
-                superB.setRadius(10);
-                superB.setFillColor(sf::Color::Blue);
-                superB.setPosition(sf::Vector2f(i,j));
-                SuperBalls.push_back(superB);
+                B.setRadius(10);
+                B.setFillColor(sf::Color::Blue);
+                B.setPosition(sf::Vector2f(i,j));
+                Balls.push_back(B);
             }
             else if(i == 210 && j ==364 || i == 375 && j == 364)
             {
@@ -156,7 +157,19 @@ bool screen::render()
         pacM();
         createFruits();
         createKeys();
-        Ghosts();
+
+        if( pellets_collision == 0)
+            Ghosts();
+        else
+        {
+            drunkGhosts();
+
+            if (clock.getElapsedTime().asSeconds() > 30)
+            {
+                pellets_collision = 0;
+                eatenGhosts.clear();
+            }
+        }
 
         printScores();
     }
@@ -164,7 +177,7 @@ bool screen::render()
     if (endGame)
     {
         window.clear(sf::Color::Black);
-window.draw(endMessage);
+        window.draw(endMessage);
     }
     window.display();
     return true;
@@ -176,7 +189,7 @@ bool screen::endGameScreen()
         return EXIT_FAILURE;
 
     endMessage.setFont(font);
-   endMessage.setCharacterSize(50);
+    endMessage.setCharacterSize(50);
     endMessage.setPosition(250.f, 250.f);
     endMessage.setFillColor(sf::Color::White);
     endMessage.setString("GAME OVER");
@@ -394,19 +407,52 @@ bool screen::pacM()
     {
         if(PacMan.getGlobalBounds().intersects(storeFruits[k].getGlobalBounds()))
         {
-
             storeFruits.erase( storeFruits.begin() + k);
             ++score;
         }
     }
 
-
     for(unsigned int k=0; k<storeGhosts.size(); k++)
     {
-        if(PacMan.getGlobalBounds().intersects(storeGhosts[k].getGlobalBounds()))
+        if(pellets_collision == 0)
         {
-            endGame = true;
-            start =false;
+            if(PacMan.getGlobalBounds().intersects(storeGhosts[k].getGlobalBounds()))
+            {
+                endGame = true;
+                start =false;
+            }
+
+        }
+        else
+        {
+            if(PacMan.getGlobalBounds().intersects(storeGhosts[k].getGlobalBounds()))
+            {
+                int checker = 0;
+
+                for(int i = 0; i < eatenGhosts.size(); i++)
+                {
+                    if( eatenGhosts[i] == k)
+                    {
+                        ++checker;
+                    }
+                }
+
+                if(checker == 0)
+                {
+                    eatenGhosts.push_back(k);
+                    score = score + 10;
+                }
+            }
+        }
+    }
+
+    for(int k = 0; k<Balls.size(); k++)
+    {
+        if(PacMan.getGlobalBounds().intersects(Balls[k].getGlobalBounds()))
+        {
+            pellets_collision =1;
+            Balls.erase( Balls.begin() + k);
+            clock.restart();
         }
     }
 
@@ -670,260 +716,351 @@ bool screen::Ghosts()
         storeGhosts.push_back(blue);
         return true;
     }
-    drunkGhosts();
 }
 
 bool screen::drunkGhosts()
 {
-        if(PacCaught == true)
-    {
-        storeGhosts.clear();
+    storeGhosts.clear();
 
-        ResourcesManager manager;
-        Maze getFunction;
+    ResourcesManager manager;
+    Maze getFunction;
 
-        sf::Sprite red(ResourcesManager::GetTexture("resources/transBlue.png"));
-        red.scale(sf::Vector2f(0.09,0.09));
+    sf::Sprite red(ResourcesManager::GetTexture("resources/transBlue.png"));
+    red.scale(sf::Vector2f(0.09,0.09));
 
-        sf::Sprite pink(ResourcesManager::GetTexture("resources/transBlue.png"));
-        pink.scale(sf::Vector2f(0.09,0.09));
+    sf::Sprite pink(ResourcesManager::GetTexture("resources/transBlue.png"));
+    pink.scale(sf::Vector2f(0.09,0.09));
 
-        sf::Sprite orange(ResourcesManager::GetTexture("resources/transBlue.png"));
-        orange.scale(sf::Vector2f(0.09,0.09));
+    sf::Sprite orange(ResourcesManager::GetTexture("resources/transBlue.png"));
+    orange.scale(sf::Vector2f(0.09,0.09));
 
-        sf::Sprite blue(ResourcesManager::GetTexture("resources/transBlue.png"));
-        blue.scale(sf::Vector2f(0.09,0.09));
+    sf::Sprite blue(ResourcesManager::GetTexture("resources/transBlue.png"));
+    blue.scale(sf::Vector2f(0.09,0.09));
 //Ghost Movement
-        if(create_ghosts == 0)
-        {
-            red.setPosition(sf::Vector2f(255,200));
-            pink.setPosition(sf::Vector2f(329,200));
-            orange.setPosition(sf::Vector2f(255,234));
-            blue.setPosition(sf::Vector2f(329,234));
-            ++create_ghosts;
-        }
-        else
-        {
-            red.setPosition(RedPos);
-            blue.setPosition(BluePos);
-            pink.setPosition(PinkPos);
-            orange.setPosition(OrangePos);
-        }
+    if(create_ghosts == 0)
+    {
+        red.setPosition(sf::Vector2f(255,200));
+        pink.setPosition(sf::Vector2f(329,200));
+        orange.setPosition(sf::Vector2f(255,234));
+        blue.setPosition(sf::Vector2f(329,234));
+        ++create_ghosts;
+    }
+    else
+    {
+        red.setPosition(RedPos);
+        blue.setPosition(BluePos);
+        pink.setPosition(PinkPos);
+        orange.setPosition(OrangePos);
+    }
 //Ghost Collisions
-        if(start)
+    if(start)
+    {
+        for (unsigned i = 0; i<getFunction.maze.size(); i++)
         {
-            for (unsigned i = 0; i<getFunction.maze.size(); i++)
+
+            if(moveRedGhost )
             {
-
-                if(moveRedGhost )
+                if(red.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
                 {
-                    if(red.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
-                    {
-                        moveRedGhost =false;
-                        red.setPosition(RedPos);
-                    }
-                    else
-                    {
-                        if(trackLeft)
-                        {
-                            red.move(sf::Vector2f(0,-0.1));
-                        }
-                        else if(trackUp)
-                        {
-                            red.move(sf::Vector2f(0,0.1));
-                        }
-                        else if(trackDown)
-                        {
-                            red.move(sf::Vector2f(-0.1,0));
-                        }
-                        else if(trackRight)
-                        {
-                            red.move(sf::Vector2f(0.1,0));
-                        }
-
-                    }
-
+                    moveRedGhost =false;
+                    red.setPosition(RedPos);
                 }
-                else if(!moveRedGhost)
+                else
                 {
                     if(trackLeft)
-                    {
-                        red.move(sf::Vector2f(0,0.1));
-                    }
-                    else if(trackUp)
                     {
                         red.move(sf::Vector2f(0,-0.1));
                     }
-                    else if(trackDown)
+                    else if(trackUp)
                     {
-                        red.move(sf::Vector2f(0.1,0));
+                        red.move(sf::Vector2f(0,0.1));
                     }
-                    else if(trackRight)
+                    else if(trackDown)
                     {
                         red.move(sf::Vector2f(-0.1,0));
                     }
+                    else if(trackRight)
+                    {
+                        red.move(sf::Vector2f(0.1,0));
+                    }
+
                 }
-                if(moveBlueGhost)
+
+            }
+            else if(!moveRedGhost)
+            {
+                if(trackLeft)
                 {
-                    if(blue.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
-                    {
-                        moveBlueGhost =false;
-                        blue.setPosition(BluePos);
-                    }
-                    else
-                    {
-                        if(trackLeft)
-                        {
-                            blue.move(sf::Vector2f(0,0.1));
-                        }
-                        else if(trackUp)
-                        {
-                            blue.move(sf::Vector2f(0,-0.1));
-                        }
-                        else if(trackDown)
-                        {
-                            blue.move(sf::Vector2f(0.1,0));
-                        }
-                        else if(trackRight)
-                        {
-                            blue.move(sf::Vector2f(-0.1,0));
-                        }
-                    }
+                    red.move(sf::Vector2f(0,0.1));
                 }
-                else if(!moveBlueGhost)
+                else if(trackUp)
+                {
+                    red.move(sf::Vector2f(0,-0.1));
+                }
+                else if(trackDown)
+                {
+                    red.move(sf::Vector2f(0.1,0));
+                }
+                else if(trackRight)
+                {
+                    red.move(sf::Vector2f(-0.1,0));
+                }
+            }
+            if(moveBlueGhost)
+            {
+                if(blue.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
+                {
+                    moveBlueGhost =false;
+                    blue.setPosition(BluePos);
+                }
+                else
                 {
                     if(trackLeft)
-                    {
-                        blue.move(sf::Vector2f(0,-0.1));
-                    }
-                    else if(trackUp)
                     {
                         blue.move(sf::Vector2f(0,0.1));
                     }
-                    else if(trackDown)
+                    else if(trackUp)
                     {
-                        blue.move(sf::Vector2f(-0.1,0));
+                        blue.move(sf::Vector2f(0,-0.1));
                     }
-                    else if(trackRight)
+                    else if(trackDown)
                     {
                         blue.move(sf::Vector2f(0.1,0));
                     }
-                }
-                if(movePinkGhost)
-                {
-                    if(pink.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
-                    {
-                        movePinkGhost =false;
-                        pink.setPosition(PinkPos);
-                    }
-                    else
-                    {
-                        if(trackLeft)
-                        {
-                            pink.move(sf::Vector2f(-0.1,0));
-                        }
-                        else if(trackUp)
-                        {
-                            pink.move(sf::Vector2f(0.1,0));
-                        }
-                        else if(trackDown)
-                        {
-                            pink.move(sf::Vector2f(0,0.1));
-                        }
-                        else if(trackRight)
-                        {
-                            pink.move(sf::Vector2f(0,-0.1));
-                        }
-                    }
-                }
-                else if(!movePinkGhost)
-                {
-                    if(trackLeft)
-                    {
-                        pink.move(sf::Vector2f(0.1,0));
-                    }
-                    else if(trackUp)
-                    {
-                        pink.move(sf::Vector2f(-0.1,0));
-                    }
-                    else if(trackDown)
-                    {
-                        pink.move(sf::Vector2f(0,-0.1));
-                    }
                     else if(trackRight)
                     {
-                        pink.move(sf::Vector2f(0,0.1));
-                    }
-                }
-                if(moveOrangeGhost)
-                {
-                    if(orange.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
-                    {
-                        moveOrangeGhost =false;
-                        orange.setPosition(OrangePos);
-                    }
-                    else
-                    {
-                        if(trackLeft)
-                        {
-                            orange.move(sf::Vector2f(0.1,0));
-                        }
-                        else if(trackUp)
-                        {
-                            orange.move(sf::Vector2f(-0.1,0));
-                        }
-                        else if(trackDown)
-                        {
-                            orange.move(sf::Vector2f(0,-0.1));
-                        }
-                        else if(trackRight)
-                        {
-                            orange.move(sf::Vector2f(0,0.1));
-                        }
-                    }
-                }
-                else if(!moveOrangeGhost)
-                {
-                    if(trackLeft)
-                    {
-                        orange.move(sf::Vector2f(-0.1,0));
-                    }
-                    else if(trackUp)
-                    {
-                        orange.move(sf::Vector2f(0.1,0));
-                    }
-                    else if(trackDown)
-                    {
-                        orange.move(sf::Vector2f(0,0.1));
-                    }
-                    else if(trackRight)
-                    {
-                        orange.move(sf::Vector2f(0,-0.1));
+                        blue.move(sf::Vector2f(-0.1,0));
                     }
                 }
             }
+            else if(!moveBlueGhost)
+            {
+                if(trackLeft)
+                {
+                    blue.move(sf::Vector2f(0,-0.1));
+                }
+                else if(trackUp)
+                {
+                    blue.move(sf::Vector2f(0,0.1));
+                }
+                else if(trackDown)
+                {
+                    blue.move(sf::Vector2f(-0.1,0));
+                }
+                else if(trackRight)
+                {
+                    blue.move(sf::Vector2f(0.1,0));
+                }
+            }
+            if(movePinkGhost)
+            {
+                if(pink.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
+                {
+                    movePinkGhost =false;
+                    pink.setPosition(PinkPos);
+                }
+                else
+                {
+                    if(trackLeft)
+                    {
+                        pink.move(sf::Vector2f(-0.1,0));
+                    }
+                    else if(trackUp)
+                    {
+                        pink.move(sf::Vector2f(0.1,0));
+                    }
+                    else if(trackDown)
+                    {
+                        pink.move(sf::Vector2f(0,0.1));
+                    }
+                    else if(trackRight)
+                    {
+                        pink.move(sf::Vector2f(0,-0.1));
+                    }
+                }
+            }
+            else if(!movePinkGhost)
+            {
+                if(trackLeft)
+                {
+                    pink.move(sf::Vector2f(0.1,0));
+                }
+                else if(trackUp)
+                {
+                    pink.move(sf::Vector2f(-0.1,0));
+                }
+                else if(trackDown)
+                {
+                    pink.move(sf::Vector2f(0,-0.1));
+                }
+                else if(trackRight)
+                {
+                    pink.move(sf::Vector2f(0,0.1));
+                }
+            }
+            if(moveOrangeGhost)
+            {
+                if(orange.getGlobalBounds().intersects(getFunction.maze[i].getGlobalBounds()))
+                {
+                    moveOrangeGhost =false;
+                    orange.setPosition(OrangePos);
+                }
+                else
+                {
+                    if(trackLeft)
+                    {
+                        orange.move(sf::Vector2f(0.1,0));
+                    }
+                    else if(trackUp)
+                    {
+                        orange.move(sf::Vector2f(-0.1,0));
+                    }
+                    else if(trackDown)
+                    {
+                        orange.move(sf::Vector2f(0,-0.1));
+                    }
+                    else if(trackRight)
+                    {
+                        orange.move(sf::Vector2f(0,0.1));
+                    }
+                }
+            }
+            else if(!moveOrangeGhost)
+            {
+                if(trackLeft)
+                {
+                    orange.move(sf::Vector2f(-0.1,0));
+                }
+                else if(trackUp)
+                {
+                    orange.move(sf::Vector2f(0.1,0));
+                }
+                else if(trackDown)
+                {
+                    orange.move(sf::Vector2f(0,0.1));
+                }
+                else if(trackRight)
+                {
+                    orange.move(sf::Vector2f(0,-0.1));
+                }
+            }
         }
-        RedPos = red.getPosition();
-        BluePos = blue.getPosition();
-        PinkPos = pink.getPosition();
-        OrangePos = orange.getPosition();
+    }
+    RedPos = red.getPosition();
+    BluePos = blue.getPosition();
+    PinkPos = pink.getPosition();
+    OrangePos = orange.getPosition();
 
+    int  eatenGhostsNum = eatenGhosts.size();
+
+    if(eatenGhostsNum == 0)
+    {
+        cout << "None" << endl;
         window.draw(red);
         window.draw(pink);
         window.draw(orange);
         window.draw(blue);
-        moveRedGhost=true;
-        moveBlueGhost=true;
-        movePinkGhost=true;
-        moveOrangeGhost=true;
-
-        storeGhosts.push_back(red);
-        storeGhosts.push_back(pink);
-        storeGhosts.push_back(orange);
-        storeGhosts.push_back(blue);
-        return true;
     }
+
+    else if(eatenGhostsNum == 1)
+    {
+        cout << "One" << endl;
+        if( (eatenGhosts[0] != 0) )
+        {
+            window.draw(red);
+        }
+        if( (eatenGhosts[0] != 1) )
+        {
+            window.draw(pink);
+        }
+        if( (eatenGhosts[0] != 2) )
+        {
+            window.draw(orange);
+        }
+        if( (eatenGhosts[0] != 3) )
+        {
+            window.draw(blue);
+        }
+    }
+
+    else  if(eatenGhostsNum == 2)
+    {
+        cout << "Two" << endl;
+        if( (eatenGhosts[0] != 1) && (eatenGhosts[1] != 0) )
+        {
+            window.draw(red);
+        }
+        if( (eatenGhosts[0] != 2) && (eatenGhosts[1] != 1) )
+        {
+            window.draw(pink);
+        }
+        if( (eatenGhosts[0] != 3) && (eatenGhosts[1] != 2)  )
+        {
+            window.draw(orange);
+        }
+        if( (eatenGhosts[0] != 4) && (eatenGhosts[1] != 3) )
+        {
+            window.draw(blue);
+        }
+
+    }
+
+    else if(eatenGhostsNum == 3)
+    {
+        cout << "Three" << endl;
+        if( (eatenGhosts[0] != 1) && (eatenGhosts[1] != 1) && (eatenGhosts[2] !=0) )
+        {
+            window.draw(red);
+        }
+         if( (eatenGhosts[0] != 2) && (eatenGhosts[1] != 2) && (eatenGhosts[2] !=1) )
+        {
+            window.draw(pink);
+        }
+         if( (eatenGhosts[0] != 3) && (eatenGhosts[1] != 3) && (eatenGhosts[2] != 2) )
+        {
+            window.draw(orange);
+        }
+        if( (eatenGhosts[0] != 4) && (eatenGhosts[1] != 4) && (eatenGhosts[2] != 3) )
+        {
+            window.draw(blue);
+        }
+
+    }
+
+    else if(eatenGhostsNum == 4)
+    {
+        cout << "Four" << endl;
+        if( (eatenGhosts[0] != 1) && (eatenGhosts[1] != 1) && (eatenGhosts[2] !=1) && (eatenGhosts[3] != 0) )
+        {
+            window.draw(red);
+        }
+        if( (eatenGhosts[0] != 2) && (eatenGhosts[1] != 2) && (eatenGhosts[2] !=2) && (eatenGhosts[3] != 1) )
+        {
+            window.draw(pink);
+        }
+        if( (eatenGhosts[0] != 3) && (eatenGhosts[1] != 3) && (eatenGhosts[2] != 3) && (eatenGhosts[3] != 2) )
+        {
+            window.draw(orange);
+        }
+        if( (eatenGhosts[0] != 4) && (eatenGhosts[1] != 4) && (eatenGhosts[2] != 4) && (eatenGhosts[3] != 3) )
+        {
+            window.draw(blue);
+        }
+    }
+
+    moveRedGhost=true;
+    moveBlueGhost=true;
+    movePinkGhost=true;
+    moveOrangeGhost=true;
+
+    storeGhosts.push_back(red);
+    storeGhosts.push_back(pink);
+    storeGhosts.push_back(orange);
+    storeGhosts.push_back(blue);
+
+    return true;
 }
+
 bool screen::createKeys()
 {
     ResourcesManager manager;
@@ -1071,6 +1208,11 @@ bool screen::printMaze()
     for(int i = 0; i<SuperBalls.size(); i++)
     {
         window.draw(SuperBalls[i]);
+    }
+
+    for(int i = 0; i<Balls.size(); i++)
+    {
+        window.draw(Balls[i]);
     }
 
     window.draw(getFunction.text);

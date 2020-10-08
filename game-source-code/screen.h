@@ -18,12 +18,14 @@ public:
     bool processEvents();
     bool splashScreen(); //Sets the splasreen
     vector<sf::CircleShape> SuperBalls;
+    vector<sf::CircleShape> Balls;
     vector<sf::Sprite> Keys;
     vector<sf::Sprite> storeKeys;
     vector<sf::Sprite> Fruits;
     vector<sf::Sprite> storeFruits;
     vector<sf::Sprite> storeGhosts;
     vector<sf::RectangleShape> ManageDoors;
+    vector<unsigned int> eatenGhosts;
 
     bool printMaze();
     int scoreTexts();
@@ -73,6 +75,7 @@ private:
     int create_fruits = 0;
     int create_doors = 0;
     int track_doors = 1;
+    int pellets_collision = 0;
 
     int create_ghosts = 0;
     int checkCollision = false;
