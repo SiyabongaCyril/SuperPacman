@@ -90,7 +90,7 @@ TEST_CASE("Check if pacmann is drawn on the window")
     CHECK(pacman.pacM());
 }
 
-TEST_CASE("Check ii ghosts are drawn on the window")
+TEST_CASE("Check if ghosts are drawn on the window")
 {
     screen ghosts;
     CHECK(ghosts.Ghosts());
