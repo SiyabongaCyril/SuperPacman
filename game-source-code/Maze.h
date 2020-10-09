@@ -10,8 +10,9 @@ class Maze
 {
     public:
         Maze();
-        void MazeDoors();
          bool setText();
+         //Last Comment
+         //vectors to store the maze componets
         vector<sf::RectangleShape> maze;
         vector<sf::RectangleShape> Doors;
         sf::Font textFont;
